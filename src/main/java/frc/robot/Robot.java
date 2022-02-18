@@ -6,6 +6,9 @@ package frc.robot;
 
 import java.util.function.Consumer;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Timer;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.DataLogger;
 import org.usfirst.frc3620.logger.EventLogging;
@@ -33,6 +36,8 @@ public class Robot extends TimedRobot {
   private Logger logger;
 
   static RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
+
+  SendablePoint2D p2d;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -73,6 +78,8 @@ public class Robot extends TimedRobot {
     new RobotDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);
     robotDataLogger.setInterval(0.25);
     robotDataLogger.start();
+
+    p2d = new SendablePoint2D(-1.0, 3.14159);
   }
 
   /**
@@ -89,6 +96,8 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    p2d.setX(Timer.getFPGATimestamp());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
