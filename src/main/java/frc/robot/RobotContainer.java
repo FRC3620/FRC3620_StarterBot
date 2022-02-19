@@ -61,14 +61,14 @@ public class RobotContainer {
 
   void makeHardware() {
     practiceBotJumper = new DigitalInput(0);
-    boolean iAmACompetitionRobot = amIACompBot();
-    if (!iAmACompetitionRobot) {
-      logger.warn("this is a test chassis, will try to deal with missing hardware!");
+    boolean shouldMakeAllCANDevices = shouldMakeAllCANDevices();
+    if (!shouldMakeAllCANDevices) {
+      logger.warn("will try to deal with missing hardware!");
     }
 
     PneumaticsModuleType pneumaticModuleType = null;
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.REV_PH, 1, "REV PH") || iAmACompetitionRobot) {
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.REV_PH, 1, "REV PH") || shouldMakeAllCANDevices) {
       pneumaticModuleType = PneumaticsModuleType.REVPH;
     } else if (canDeviceFinder.isDevicePresent(CANDeviceType.CTRE_PCM, 0, "CTRE PCM")) {
       pneumaticModuleType = PneumaticsModuleType.CTREPCM;
@@ -116,18 +116,19 @@ public class RobotContainer {
     return chooser.getSelected();
   }
 
-  /**
-   * Determine if this robot is a competition robot.
+   /**
+   * Determine if we should make software objects, even if the device does 
+   * not appear on the CAN bus.
    *
-   * It is if it's connected to an FMS.
+   * We should if it's connected to an FMS.
    *
-   * It is if it is missing a grounding jumper on DigitalInput 0.
+   * We should if it is missing a grounding jumper on DigitalInput 0.
    *
-   * It is if the robot_parameters.json says so for this MAC address.
-   *
-   * @return true if this robot is a competition robot.
+   * We should if the robot_parameters.json says so for this MAC address.
+   * 
+   * @return true if we should make all software objects for CAN devices
    */
-  public static boolean amIACompBot() {
+  public static boolean shouldMakeAllCANDevices() {
     if (DriverStation.isFMSAttached()) {
       return true;
     }
@@ -136,7 +137,7 @@ public class RobotContainer {
       return true;
     }
 
-    if (robotParameters.isCompetitionRobot()) {
+    if (robotParameters.shouldMakeAllCANDevices()) {
       return true;
     }
 
