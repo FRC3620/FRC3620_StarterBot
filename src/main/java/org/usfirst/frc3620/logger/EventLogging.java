@@ -57,11 +57,10 @@ public class EventLogging {
      * @return
      */
     static public org.slf4j.Logger getLogger(String sClazz, Level l) {
-        setup();
+        //setup();
         // set up the underlying logger to log at the level we want
-        java.util.logging.Logger julLogger = java.util.logging.Logger
-                .getLogger(sClazz);
-        julLogger.setLevel(l.julLevel);
+        //java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger(sClazz);
+        //julLogger.setLevel(l.julLevel);
 
         // and return the SLF4J logger.
         org.slf4j.Logger rv = org.slf4j.LoggerFactory.getLogger(sClazz);
