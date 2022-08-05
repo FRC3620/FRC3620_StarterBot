@@ -21,11 +21,11 @@ public final class TimeIsSetFilter extends AbstractFilter {
 
     @Override
     public Result filter(LogEvent event) {
-        Message m = event.getMessage();
+        // Message m = event.getMessage();
         long ms = event.getTimeMillis();
         boolean timeIsSet = ms >= SOME_TIME_AFTER_1970;
         Result r = timeIsSet ? onMatch : onMismatch;
-        System.out.println ("ms=" + ms + ", timeIsSet=" + timeIsSet + ", m=" + m.getFormattedMessage() + ", r=" + r);
+        // System.out.println ("ms=" + ms + ", timeIsSet=" + timeIsSet + ", m=" + m.getFormattedMessage() + ", r=" + r);
         return r;
     }
 

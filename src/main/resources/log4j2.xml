@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="DEBUG" packages="org.usfirst.frc3620.logger.log4j2">
+<Configuration status="INFO" packages="org.usfirst.frc3620.logger.log4j2">
     <Appenders>
         <Console name="Console">
             <PatternLayout pattern="%-5level %c{1.} %msg%n"/>
@@ -23,13 +23,13 @@
         -->
     </Appenders>
     <Loggers>
-        <Root level="trace">
+        <ASyncRoot level="trace">
             <AppenderRef ref="DS"/>
             <AppenderRef ref="LoggingFile"/>
             <!--
             <AppenderRef ref="Console"/>
             <AppenderRef ref="SA"/>
             -->
-        </Root>
+        </AsyncRoot>
     </Loggers>
 </Configuration>
