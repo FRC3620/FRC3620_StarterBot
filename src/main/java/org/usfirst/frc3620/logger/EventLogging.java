@@ -1,17 +1,5 @@
 package org.usfirst.frc3620.logger;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-import java.util.logging.StreamHandler;
-
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class EventLogging {

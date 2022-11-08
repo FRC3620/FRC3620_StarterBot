@@ -9,8 +9,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
-import edu.wpi.first.hal.HAL;
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.hal.DriverStationJNI;
 
 import java.io.Serializable;
 
@@ -43,6 +42,6 @@ public class DriverStationAppender extends AbstractAppender {
         if (level.equals(Level.WARN)) {
             ls = "WARNING";
         }
-        HAL.sendConsoleLine(ls + " " + s);
+        DriverStationJNI.sendConsoleLine(ls + " " + s);
     }
 }
