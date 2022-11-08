@@ -9,10 +9,14 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
+import edu.wpi.first.hal.HAL;
+import edu.wpi.first.wpilibj.DriverStation;
+
 import java.io.Serializable;
 
 @Plugin(name = "DriverStation", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class DriverStationAppender extends AbstractAppender {
+    StackTraceElement[] noStackTrace = new StackTraceElement[0];
 
     public DriverStationAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout) {
         super(name, filter, layout, true, null);
@@ -31,15 +35,14 @@ public class DriverStationAppender extends AbstractAppender {
 
     @Override
     public void append(final LogEvent event) {
-        // System.out.print ("DS1 on thread " + Thread.currentThread().getName());
-        if (event.getLevel().isMoreSpecificThan(Level.ERROR)) {
-            System.out.print ("ToDSE: " );
-        } else if (event.getLevel().isMoreSpecificThan(Level.WARN)) {
-            System.out.print ("ToDSW: " );
-        } else {
-            System.out.print("ToDS: ");
-        }
         byte[] ba = getLayout().toByteArray(event);
-        System.out.print (new String(ba));
+        String s = new String(ba);
+        // System.out.print ("DS1 on thread " + Thread.currentThread().getName());
+        Level level = event.getLevel();
+        String ls = level.toString();
+        if (level.equals(Level.WARN)) {
+            ls = "WARNING";
+        }
+        HAL.sendConsoleLine(ls + " " + s);
     }
 }

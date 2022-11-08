@@ -17,7 +17,7 @@
             </Routes>
         </Routing>
         <DriverStation name="DS">
-            <PatternLayout pattern="%-5level %c{1.} - %msg%n"/>
+            <PatternLayout pattern="%c{1.} - %msg%n"/>
         </DriverStation>
     </Appenders>
     <Loggers>

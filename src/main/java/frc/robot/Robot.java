@@ -13,6 +13,7 @@ import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.GitNess;
 import org.usfirst.frc3620.misc.RobotMode;
 
+import edu.wpi.first.hal.HAL;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -40,8 +41,22 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    /*
+    StackTraceElement[] noStackTrace = new StackTraceElement[0];
+
+    DriverStation.reportError("test 1", false);
+    DriverStation.reportError("test 2", noStackTrace);
+    HAL.sendError(true, 1, false, "test 3", "", "", false);
+    HAL.sendError(true, 1, false, "test 4", "", "", true);
+    HAL.sendError(true, 1, true, "test 5", "", "", true);
+    HAL.sendConsoleLine("ERROR test 6");
+    HAL.sendConsoleLine("WARNING test 7");
+    */
+
     logger = EventLogging.getLogger(Robot.class, Level.INFO);
     logger.info ("I'm alive! {}", GitNess.gitDescription());
+    logger.warn("Fake warning");
+    logger.error("Fake error");
 
     PortForwarder.add (10080, "wpilibpi.local", 80);
     PortForwarder.add (10022, "wpilibpi.local", 22);
