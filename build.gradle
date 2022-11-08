@@ -1,6 +1,9 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2023.1.1-beta-2"
+    // FRC3620 ****************************************************************
+    id "com.gorylenko.gradle-git-properties" version "2.3.2"
+    // ************************************************************************
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -51,6 +54,19 @@ dependencies {
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
 
+    implementation 'com.google.code.gson:gson:2.8.9'
+
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
+    implementation group: 'org.slf4j', name: 'jul-to-slf4j', version: '1.7.32' // JUL bridge
+
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.18.0'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.18.0'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.18.0'
+
+    // https://mvnrepository.com/artifact/com.lmax/disruptor
+    implementation group: 'com.lmax', name: 'disruptor', version: '3.4.4'
+
     roborioDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.roborio)
     roborioDebug wpi.java.vendor.jniDebug(wpi.platforms.roborio)
 
@@ -78,6 +94,15 @@ wpi.sim.addDriverstation()
 jar {
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
+    // FRC3620 ****************************************************************
+    // this is so log4j2 can scan classes for plugins
+    manifest {
+        attributes(
+                "Manifest-Version": "1.0",
+                "Multi-Release": true
+        )
+    }
+    // ************************************************************************
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
@@ -90,3 +115,68 @@ wpi.java.configureTestTasks(test)
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
+
+// FRC3620 ********************************************************************
+// git wonderfulness
+
+task printGitProperties {
+    dependsOn generateGitProperties
+    doLast {
+        println "Project: " + project.ext.gitProps["project.dir"]
+        println "Branch: " + project.ext.gitProps["git.branch"]
+        println "Describe: " + project.ext.gitProps["git.commit.id.describe"]
+        println "Dirty: "  + project.ext.gitProps["git.dirty"]
+        println "Build time: " + project.ext.gitProps["build.time"]
+        println "Build host: " + project.ext.gitProps["git.build.host"]
+    }
+}
+
+def getBuildTime() {
+    return new Date().toString();
+}
+
+gitProperties {
+    // Customize directory using gitPropertiesResourceDir config
+    // The directory in this config key is also added as a classpath entry
+    // (so the git.properties file will be included in the final JAR file)
+    customProperty "build.time", { getBuildTime() }
+    customProperty "project.dir", { project.projectDir.getName() }
+    customProperty 'git.commit.id.describe', { it.describe(tags: true, always: true) } 
+    gitPropertiesResourceDir = file("${project.rootDir}/src/main/deploy")
+    extProperty = 'gitProps'
+}
+generateGitProperties.finalizedBy printGitProperties // make sure we do things in the correct order
+generateGitProperties.outputs.upToDateWhen { false } // make sure the generateGitProperties task always executes (even when git.properties is not changed)
+
+tasks.processResources.dependsOn generateGitProperties // make sure we do things in the correct order
+// https://stackoverflow.com/a/70648216/17887564
+tasks.processResources.outputs.upToDateWhen { false }  // make sure the processResources task always runs
+
+// ****************************************************************************
+
+// FRC3620 ********************************************************************
+// test wonderfulness
+test {
+    filter {
+        // https://stackoverflow.com/a/52879530/17887564
+        setFailOnNoMatchingTests(false)
+
+        // run this if nothing else so only this runs
+        includeTestsMatching 'DummyTest'
+
+        // includeTestsMatching 'SillyTests'
+    }
+}
+
+// this helps junit test results show up in output
+// look at https://stackoverflow.com/a/36130467/17887564 for some more suggestions
+tasks.withType(Test) { 
+  testLogging {
+    exceptionFormat "full"
+    // events "passed", "failed" // , "started", "skipped"
+    showStandardStreams true
+    showExceptions true
+  }
+}
+
+// ****************************************************************************
