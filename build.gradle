@@ -81,7 +81,14 @@ dependencies {
     nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)
     simulationRelease wpi.sim.enableRelease()
 
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+
     testImplementation 'junit:junit:4.13.1'
+	testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.8.2") {
+		because 'allows JUnit 3 and JUnit 4 tests to run'
+	}
 }
 
 // Simulation configuration (e.g. environment variables).
@@ -154,9 +161,12 @@ tasks.processResources.outputs.upToDateWhen { false }  // make sure the processR
 
 // ****************************************************************************
 
-// FRC3620 ********************************************************************
-// test wonderfulness
 test {
+    useJUnitPlatform()
+    systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+
+    // FRC3620 ********************************************************************
+    // test wonderfulness
     filter {
         // https://stackoverflow.com/a/52879530/17887564
         setFailOnNoMatchingTests(false)
@@ -166,8 +176,10 @@ test {
 
         // includeTestsMatching 'SillyTests'
     }
+    // ****************************************************************************
 }
 
+// FRC3620 ********************************************************************
 // this helps junit test results show up in output
 // look at https://stackoverflow.com/a/36130467/17887564 for some more suggestions
 tasks.withType(Test) { 
@@ -178,5 +190,4 @@ tasks.withType(Test) {
     showExceptions true
   }
 }
-
 // ****************************************************************************
