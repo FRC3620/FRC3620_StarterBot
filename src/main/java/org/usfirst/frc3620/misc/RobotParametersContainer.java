@@ -1,8 +1,11 @@
 package org.usfirst.frc3620.misc;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+
 import frc.robot.Robot;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
@@ -14,7 +17,6 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.nio.file.Files;
@@ -25,7 +27,7 @@ import java.util.*;
 public class RobotParametersContainer {
     public final static Logger logger = EventLogging.getLogger(RobotParameters.class, EventLogging.Level.INFO);
 
-    static Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+    static ObjectMapper objectMapper = new ObjectMapper();
 
     public static <T extends RobotParameters> Map<String, T> makeParameterMap(List<T> l) {
         Map<String, T> rv = new HashMap<>();
@@ -38,9 +40,9 @@ public class RobotParametersContainer {
     static <T extends RobotParameters> Map<String, T> readConfiguration(Class<T> parametersClass, Path path) throws IOException {
         String json = Files.readString(path);
         json = Minifier.minify(json);
-        // https://stackoverflow.com/a/52296997
-        Type parameterListType = TypeToken.getParameterized(List.class, parametersClass).getType();
-        List<T> list = gson.fromJson(json, parameterListType);
+        // https://stackoverflow.com/a/61154659/17887564
+        JavaType javaType = TypeFactory.defaultInstance().constructCollectionType(List.class, parametersClass);
+        List<T> list = objectMapper.readValue(json, javaType);
 
         return makeParameterMap(list);
     }
@@ -64,7 +66,7 @@ public class RobotParametersContainer {
         RobotParameters rv = null;
 
         Map<String, T> parameterMap = null;
-        logger.info("reading robotParameters from {}", path);
+        logger.info("reading {} from {}", parametersClass.getName(), path);
         try {
             parameterMap = readConfiguration(parametersClass, path);
         } catch (IOException e) {
@@ -93,7 +95,11 @@ public class RobotParametersContainer {
             }
         }
         if (rv != null) {
-            logger.info("robot parameters {}: {}", rv.getClass(), gson.toJson(rv));
+            try {
+                logger.info("robot parameters {}: {}", rv.getClass(), objectMapper.writeValueAsString(rv));
+            } catch (JsonProcessingException ex) {
+                logger.error("Unable to format JSON of RobotParameters for logging: {}", ex);
+            }
         }
         return (T) rv;
     }

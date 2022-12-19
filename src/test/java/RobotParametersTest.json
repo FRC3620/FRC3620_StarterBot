@@ -8,5 +8,10 @@
     "offset": 5.5,
     "macAddress": "00:11:22:33:44:55",
     "competitionRobot": false
+  },
+  {
+    "offset": 1.1,
+    "macAddress": "(simulation)",
+    "competitionRobot": false
   }
 ]
