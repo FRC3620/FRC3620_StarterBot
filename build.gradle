@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2023.1.1-beta-6"
+    id "edu.wpi.first.GradleRIO" version "2023.1.1"
     // FRC3620 ****************************************************************
     id "com.gorylenko.gradle-git-properties" version "2.3.2"
     // ************************************************************************
@@ -49,7 +49,7 @@ wpi.java.debugJni = false
 def includeDesktopSupport = false
 
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
-// Also defines JUnit 4.
+// Also defines JUnit 5.
 dependencies {
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
@@ -89,6 +89,24 @@ dependencies {
 	testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.8.2") {
 		because 'allows JUnit 3 and JUnit 4 tests to run'
 	}
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+
+    // FRC3620 ********************************************************************
+    // test wonderfulness
+    filter {
+        // https://stackoverflow.com/a/52879530/17887564
+        setFailOnNoMatchingTests(false)
+
+        // run this if nothing else so only this runs
+        includeTestsMatching 'DummyTest'
+
+        includeTestsMatching 'RobotParametersTest'
+    }
+    // ****************************************************************************
 }
 
 // Simulation configuration (e.g. environment variables).
@@ -160,24 +178,6 @@ tasks.processResources.dependsOn generateGitProperties // make sure we do things
 tasks.processResources.outputs.upToDateWhen { false }  // make sure the processResources task always runs
 
 // ****************************************************************************
-
-test {
-    useJUnitPlatform()
-    systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
-
-    // FRC3620 ********************************************************************
-    // test wonderfulness
-    filter {
-        // https://stackoverflow.com/a/52879530/17887564
-        setFailOnNoMatchingTests(false)
-
-        // run this if nothing else so only this runs
-        includeTestsMatching 'DummyTest'
-
-        includeTestsMatching 'RobotParametersTest'
-    }
-    // ****************************************************************************
-}
 
 // FRC3620 ********************************************************************
 // this helps junit test results show up in output
