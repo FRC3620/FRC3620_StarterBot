@@ -5,10 +5,10 @@
     "makeAllCANDevices": true,
     "swerveParameters": {
       // azimuth home encoders
-      "he.rf": -52.6,   // right front
+      "he.rf": -52.9,   // right front
       "he.lf": 86.4,  // left front
       "he.lb": 82.9, // left back
-      "he.rb": -95.1,  // right back
+      "he.rb": 90.6,  // right back
       //
       "chassis_width": 23.00,  // inches
       "chassis_length": 23.00
