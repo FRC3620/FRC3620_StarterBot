@@ -24,11 +24,11 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class RobotParametersContainer {
-    public final static Logger logger = EventLogging.getLogger(RobotParameters.class, EventLogging.Level.INFO);
+    public final static Logger logger = EventLogging.getLogger(RobotParametersBase.class, EventLogging.Level.INFO);
 
     static ObjectMapper objectMapper = new ObjectMapper();
 
-    public static <T extends RobotParameters> Map<String, T> makeParameterMap(List<T> l) {
+    public static <T extends RobotParametersBase> Map<String, T> makeParameterMap(List<T> l) {
         Map<String, T> rv = new HashMap<>();
         for (T c : l) {
             rv.put(c.macAddress.toLowerCase(), c);
@@ -36,7 +36,7 @@ public class RobotParametersContainer {
         return rv;
     }
 
-    static <T extends RobotParameters> Map<String, T> readConfiguration(Class<T> parametersClass, Path path) throws IOException {
+    static <T extends RobotParametersBase> Map<String, T> readConfiguration(Class<T> parametersClass, Path path) throws IOException {
         String json = Files.readString(path);
         json = Minifier.minify(json);
         // https://stackoverflow.com/a/61154659/17887564
@@ -46,23 +46,23 @@ public class RobotParametersContainer {
         return makeParameterMap(list);
     }
 
-    public static <T extends RobotParameters> T getRobotParameters (Class<T> parametersClass, String filename) {
+    public static <T extends RobotParametersBase> T getRobotParameters (Class<T> parametersClass, String filename) {
         Path path = Paths.get(filename);
         return getRobotParameters(parametersClass, path, identifyRoboRIO());
     }
 
-    public static <T extends RobotParameters> T getRobotParameters (Class<T> parametersClass) {
+    public static <T extends RobotParametersBase> T getRobotParameters (Class<T> parametersClass) {
         File file = new File(Filesystem.getDeployDirectory(), "robot_parameters.json");
         return getRobotParameters(parametersClass, file.toPath(), identifyRoboRIO());
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends RobotParameters> T getRobotParameters (Class<T> parametersClass, Path path, String mac) {
-        if (! RobotParameters.class.isAssignableFrom(parametersClass)) {
+    public static <T extends RobotParametersBase> T getRobotParameters (Class<T> parametersClass, Path path, String mac) {
+        if (! RobotParametersBase.class.isAssignableFrom(parametersClass)) {
             logger.error("getRobotParameters needs a subclass of RobotParameters, returning null");
             return null;
         }
-        RobotParameters rv = null;
+        RobotParametersBase rv = null;
 
         Map<String, T> parameterMap = null;
         logger.info("reading {} from {}", parametersClass.getName(), path);
@@ -85,7 +85,7 @@ public class RobotParametersContainer {
             } else {
                 try {
                     logger.info("making default {}", parametersClass.getName());
-                    Constructor<? extends RobotParameters> c = parametersClass.getConstructor();
+                    Constructor<? extends RobotParametersBase> c = parametersClass.getConstructor();
                     rv = c.newInstance();
                 } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
                     e.printStackTrace(System.err);

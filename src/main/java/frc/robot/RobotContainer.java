@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.usfirst.frc3620.misc.CANDeviceType;
-import org.usfirst.frc3620.misc.RobotParameters;
 import org.usfirst.frc3620.misc.RobotParametersContainer;
 import org.usfirst.frc3620.misc.XBoxConstants;
 
@@ -34,6 +33,8 @@ public class RobotContainer {
 
   // hardware here...
   private static DigitalInput practiceBotJumper;
+
+  public static PneumaticsModuleType pneumaticModuleType = null;
 
   // subsystems here
   private static ExampleSubsystem exampleSubsystem;
