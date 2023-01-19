@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
 import java.util.function.Consumer;
@@ -41,22 +37,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    /*
-    StackTraceElement[] noStackTrace = new StackTraceElement[0];
-
-    DriverStation.reportError("test 1", false);
-    DriverStation.reportError("test 2", noStackTrace);
-    HAL.sendError(true, 1, false, "test 3", "", "", false);
-    HAL.sendError(true, 1, false, "test 4", "", "", true);
-    HAL.sendError(true, 1, true, "test 5", "", "", true);
-    HAL.sendConsoleLine("ERROR test 6");
-    HAL.sendConsoleLine("WARNING test 7");
-    */
-
     logger = EventLogging.getLogger(Robot.class, Level.INFO);
     logger.info ("I'm alive! {}", GitNess.gitDescription());
-    logger.warn("Fake warning");
-    logger.error("Fake error");
 
     PortForwarder.add (10080, "wpilibpi.local", 80);
     PortForwarder.add (10022, "wpilibpi.local", 22);

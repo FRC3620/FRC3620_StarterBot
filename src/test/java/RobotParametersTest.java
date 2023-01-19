@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.Test;
 
-import org.usfirst.frc3620.misc.RobotParameters;
+import org.usfirst.frc3620.misc.RobotParametersBase;
 import org.usfirst.frc3620.misc.RobotParametersContainer;
 import org.usfirst.frc3620.misc.Minifier;
 
@@ -20,7 +20,7 @@ public class RobotParametersTest {
     static String test_parameters_filename = "src/test/java/RobotParametersTest.json";
     static ObjectMapper objectMapper = new ObjectMapper();
 
-    public static class TestRobotParameters extends RobotParameters {
+    public static class TestRobotParameters extends RobotParametersBase {
         Double offset;
         public TestRobotParameters() {
             super();
@@ -43,10 +43,10 @@ public class RobotParametersTest {
         Map<String, TestRobotParameters> map2 = RobotParametersContainer.makeParameterMap(list2);
         System.out.println (map2);
 
-        List<RobotParameters> list3 = objectMapper.readValue(json, new TypeReference<List<RobotParameters>>() { });
+        List<RobotParametersBase> list3 = objectMapper.readValue(json, new TypeReference<List<RobotParametersBase>>() { });
         System.out.println (list3);
 
-        Map<String, RobotParameters> map3 = RobotParametersContainer.makeParameterMap(list3);
+        Map<String, RobotParametersBase> map3 = RobotParametersContainer.makeParameterMap(list3);
         System.out.println (map3);
     }
 
@@ -75,7 +75,7 @@ public class RobotParametersTest {
     }
     @Test
     public void l2_testBasic() {
-        RobotParameters rb = RobotParametersContainer.getRobotParameters(RobotParameters.class, test_parameters_filename);
+        RobotParametersBase rb = RobotParametersContainer.getRobotParameters(RobotParametersBase.class, test_parameters_filename);
         System.out.println (rb);
 
         TestRobotParameters trb = RobotParametersContainer.getRobotParameters(TestRobotParameters.class, test_parameters_filename);
