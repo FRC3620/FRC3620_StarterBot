@@ -2,17 +2,47 @@
   {
     "name": "2022 competition",
     "macAddress": "00-80-2F-21-E4-EA",
-    "makeAllCANDevices": true
+    "makeAllCANDevices": true,
+    "swerveParameters": {
+      // azimuth home encoders
+      "he.rf": -52.6,   // right front
+      "he.lf": 86.4,  // left front
+      "he.lb": 82.9, // left back
+      "he.rb": -95.1,  // right back
+      //
+      "chassis_width": 23.00,  // inches
+      "chassis_length": 23.00
+    }
   },
   {
     "name": "2021 competition",
     "macAddress": "00-80-2F-17-EB-08",
-    "makeAllCANDevices": false
+    "makeAllCANDevices": false,
+    "swerveParameters": {
+      // azimuth home encoders
+      "he.rf": 38.75,   // right front
+      "he.lf": -92.19,  // left front
+      "he.lb": -121.72, // left back
+      "he.rb": -61.72,  // right back
+      //
+      "chassis_width": 22.25,  // inches
+      "chassis_length": 24.25
+    }
   },
   {
     "name": "TOAD",
     "macAddress": "00-80-2F-18-5C-5F",
-    "makeAllCANDevices": false
+    "makeAllCANDevices": false,
+    "swerveParameters": {
+      // azimuth home encoders
+      "he.rf": -173.67, // right front
+      "he.lf": 73.65,   // left front
+      "he.lb": -29.79,  // left back
+      "he.rb": 62.05,   // right back
+      //
+      "chassis_width": 22.25,  // inches
+      "chassis_length": 24.25
+    }
   },
   {
     "name": "Fancy Mule Board",

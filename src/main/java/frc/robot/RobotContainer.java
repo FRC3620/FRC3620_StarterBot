@@ -8,11 +8,13 @@ import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.INavigationSubsystem;
+import frc.robot.subsystems.NavXNavigationSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.RobotParametersContainer;
+import org.usfirst.frc3620.misc.XBoxConstants;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -33,7 +35,8 @@ public class RobotContainer {
   public static PneumaticsModuleType pneumaticModuleType = null;
 
   // subsystems here
-  private static ExampleSubsystem exampleSubsystem;
+  public static DriveSubsystem driveSubsystem;
+  public static INavigationSubsystem navigationSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -70,7 +73,8 @@ public class RobotContainer {
   }
 
   private void makeSubsystems() {
-    exampleSubsystem = new ExampleSubsystem();
+    navigationSubsystem = new NavXNavigationSubsystem();
+    driveSubsystem = new DriveSubsystem(navigationSubsystem);
   }
 
   /**
@@ -90,9 +94,45 @@ public class RobotContainer {
 
   SendableChooser<Command> chooser = new SendableChooser<>();
   public void setupAutonomousCommands() {
-    SmartDashboard.putData("Auto mode", chooser);
+  }
 
-    chooser.addOption("Example Command", new ExampleCommand(exampleSubsystem));
+  static double driverStrafeDeadzone = 0.1;
+
+  public static double getDriveVerticalJoystick() {
+    double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y);
+    SmartDashboard.putNumber("driver.raw.y", axisValue);
+    if (Math.abs(axisValue) < driverStrafeDeadzone) {
+      return 0;
+    }
+    if (axisValue < 0){
+      return (axisValue*axisValue);
+    }
+    return -axisValue*axisValue;
+  }
+
+  public static double getDriveHorizontalJoystick() {
+    double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X);
+    SmartDashboard.putNumber("driver.raw.x", axisValue);
+    if (Math.abs(axisValue) < driverStrafeDeadzone) {
+      return 0;
+    }
+    if (axisValue < 0){
+      return -(axisValue*axisValue);
+    }
+    return axisValue*axisValue;
+  }
+
+  static double driverSpinDeadzone = 0.1;
+  public static double getDriveSpinJoystick() {
+    double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X);
+    SmartDashboard.putNumber("driver.raw.spin", axisValue);
+    if (Math.abs(axisValue) < driverSpinDeadzone) {
+      return 0;
+    }
+    if (axisValue < 0){
+      return -(axisValue*axisValue);
+    }
+    return axisValue*axisValue;
   }
 
   /**
@@ -160,6 +200,5 @@ public class RobotContainer {
 
     return false;
   }
-
 
 }
