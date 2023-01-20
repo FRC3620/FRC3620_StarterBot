@@ -5,15 +5,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
 import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.RobotParameters;
 import org.usfirst.frc3620.misc.RobotParametersContainer;
+import org.usfirst.frc3620.misc.XBoxConstants;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -88,6 +92,10 @@ public class RobotContainer {
   private void configureButtonBindings() {
     driverJoystick = new Joystick(0);
     operatorJoystick = new Joystick(1);
+
+    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
+      .onTrue(new LogCommand("'A' button hit"));
+
   }
 
   private void setupSmartDashboardCommands() {
