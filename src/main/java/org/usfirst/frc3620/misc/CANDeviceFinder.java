@@ -195,8 +195,8 @@ public class CANDeviceFinder {
         
         finders.add(new APIFinder(CANDeviceType.CTRE_PCM, 0)); // PCM 0
         finders.add(new APIFinder(CANDeviceType.CTRE_PDP, 0)); // PDP 0
-        finders.add(new APIFinder(CANDeviceType.REV_PH, 1)); // PCM 0
-        finders.add(new APIFinder(CANDeviceType.REV_PDH, 1)); // PDP 0
+        finders.add(new APIFinder(CANDeviceType.REV_PH, 1)); // PH 1
+        finders.add(new APIFinder(CANDeviceType.REV_PDH, 1)); // PDH 1
         finders.add(new APIFinder(CANDeviceType.TALON, 1)); // SRX #1
         finders.add(new APIFinder(CANDeviceType.VICTOR_SPX, 2)); // SPX #2
 

@@ -21,7 +21,7 @@ public class MotorSetup {
     }
     
     public static void resetTalonFXToKnownState(WPI_TalonFX m, InvertType invert) {
-        // int kTimeoutMs = 0;
+        int kTimeoutMs = 0;
         m.configFactoryDefault();
         m.setInverted(invert);
     

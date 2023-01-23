@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.util.Set;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ public class Robot extends TimedRobot {
 
   private Logger logger;
 
-  static RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
+  static private RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -97,11 +98,15 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    logCANBusIfNecessary(); // don't do this when enabled; unnecessary overhead
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    logCANBusIfNecessary();
+
     processRobotModeChange(RobotMode.AUTONOMOUS);
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
@@ -118,6 +123,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    logCANBusIfNecessary();
+
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -136,6 +143,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
+    logCANBusIfNecessary();
+
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
 
@@ -165,6 +174,10 @@ public class Robot extends TimedRobot {
     return currentRobotMode;
   }
 
+  public static RobotMode getPreviousRobotMode(){
+    return previousRobotMode;
+  }
+
   void logMatchInfo() {
     if (DriverStation.isFMSAttached()) {
       logger.info("FMS attached. Event name {}, match type {}, match number {}, replay number {}", 
@@ -174,6 +187,23 @@ public class Robot extends TimedRobot {
         DriverStation.getReplayNumber());
     }
     logger.info("Alliance {}, position {}", DriverStation.getAlliance(), DriverStation.getLocation());
+  }
+
+  private final static long SOME_TIME_AFTER_1970 = 523980000000L;
+  private boolean hasCANBusBeenLogged;
+  
+  void logCANBusIfNecessary() {
+    if (!hasCANBusBeenLogged) {
+      long now = System.currentTimeMillis();
+      if (now > SOME_TIME_AFTER_1970) {
+        logger.info ("CAN bus: " + RobotContainer.canDeviceFinder.getDeviceSet());
+        var missingDevices = RobotContainer.canDeviceFinder.getMissingDeviceSet();
+        if (missingDevices.size() > 0) {
+          logger.warn ("Missing devices: " + missingDevices);
+        }
+        hasCANBusBeenLogged = true;
+      }
+    }
   }
 
 }

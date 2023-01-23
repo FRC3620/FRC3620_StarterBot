@@ -14,8 +14,8 @@ public class RobotDataLogger {
 	public RobotDataLogger (DataLogger dataLogger, CANDeviceFinder canDeviceFinder) {
 
 		dataLogger.addDataProvider("matchTime", () -> DataLogger.f2(DriverStation.getMatchTime()));
-		dataLogger.addDataProvider("robotMode", () -> Robot.currentRobotMode.toString());
-		dataLogger.addDataProvider("robotModeInt", () -> Robot.currentRobotMode.ordinal());
+		dataLogger.addDataProvider("robotMode", () -> Robot.getCurrentRobotMode().toString());
+		dataLogger.addDataProvider("robotModeInt", () -> Robot.getCurrentRobotMode().ordinal());
 		dataLogger.addDataProvider("batteryVoltage", () -> DataLogger.f2(RobotController.getBatteryVoltage()));
 
 		dataLogger.addDataProvider("nav.heading_raw", () -> DataLogger.f2(RobotContainer.navigationSubsystem.getRawHeading()));
