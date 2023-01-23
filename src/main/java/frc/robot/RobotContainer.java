@@ -29,8 +29,8 @@ public class RobotContainer {
   public final static Logger logger = EventLogging.getLogger(RobotContainer.class, Level.INFO);
   
   // need this
-  static CANDeviceFinder canDeviceFinder;
-  static RobotParameters robotParameters;
+  public static CANDeviceFinder canDeviceFinder;
+  public static RobotParameters robotParameters;
 
   // hardware here...
   private static DigitalInput practiceBotJumper;
@@ -45,38 +45,30 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     canDeviceFinder = new CANDeviceFinder();
-    logger.info ("CAN bus: " + canDeviceFinder.getDeviceSet());
 
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
     logger.info ("got parameters for chassis '{}'", robotParameters.getName());
 
-    makeHardware();
-    setupMotors();
-    makeSubsystems();
-    // Configure the button bindings
-    configureButtonBindings();
-    setupSmartDashboardCommands();
-    setupAutonomousCommands();
-  }
-
-  void makeHardware() {
     practiceBotJumper = new DigitalInput(0);
     boolean iAmACompetitionRobot = amIACompBot();
     if (!iAmACompetitionRobot) {
       logger.warn("this is a test chassis, will try to deal with missing hardware!");
     }
 
-    PneumaticsModuleType pneumaticModuleType = null;
-
     if (canDeviceFinder.isDevicePresent(CANDeviceType.REV_PH, 1, "REV PH") || iAmACompetitionRobot) {
       pneumaticModuleType = PneumaticsModuleType.REVPH;
     } else if (canDeviceFinder.isDevicePresent(CANDeviceType.CTRE_PCM, 0, "CTRE PCM")) {
       pneumaticModuleType = PneumaticsModuleType.CTREPCM;
     }
-  }
 
-  private void setupMotors() {
+    makeSubsystems();
 
+    // Configure the button bindings
+    configureButtonBindings();
+
+    setupSmartDashboardCommands();
+
+    setupAutonomousCommands();
   }
 
   private void makeSubsystems() {
@@ -141,6 +133,34 @@ public class RobotContainer {
     }
 
     if (robotParameters.isCompetitionRobot()) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Determine if we should make software objects, even if the device does 
+   * not appear on the CAN bus.
+   *
+   * We should if it's connected to an FMS.
+   *
+   * We should if it is missing a grounding jumper on DigitalInput 0.
+   *
+   * We should if the robot_parameters.json says so for this MAC address.
+   * 
+   * @return true if we should make all software objects for CAN devices
+   */
+  public static boolean shouldMakeAllCANDevices() {
+    if (DriverStation.isFMSAttached()) {
+      return true;
+    }
+
+    if(practiceBotJumper.get() == true){
+      return true;
+    }
+
+    if (robotParameters.shouldMakeAllCANDevices()) {
       return true;
     }
 
