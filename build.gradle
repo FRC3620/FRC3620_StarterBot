@@ -3,7 +3,8 @@ plugins {
     id "edu.wpi.first.GradleRIO" version "2023.2.1"
     // FRC3620 ****************************************************************
     id "com.gorylenko.gradle-git-properties" version "2.3.2"
-    id 'com.diffplug.spotless' version '6.12.0'
+    // later:
+    // id 'com.diffplug.spotless' version '6.12.0'
     // ************************************************************************
 }
 
@@ -87,9 +88,9 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 
     testImplementation 'junit:junit:4.13.1'
-	testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.8.2") {
-		because 'allows JUnit 3 and JUnit 4 tests to run'
-	}
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.8.2") {
+        because 'allows JUnit 3 and JUnit 4 tests to run'
+    }
 }
 
 test {
@@ -126,7 +127,7 @@ jar {
         attributes(
                 "Manifest-Version": "1.0",
                 "Multi-Release": true
-        )
+                )
     }
     // ************************************************************************
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -167,7 +168,7 @@ gitProperties {
     // (so the git.properties file will be included in the final JAR file)
     customProperty "build.time", { getBuildTime() }
     customProperty "project.dir", { project.projectDir.getName() }
-    customProperty 'git.commit.id.describe', { it.describe(tags: true, always: true) } 
+    customProperty 'git.commit.id.describe', { it.describe(tags: true, always: true) }
     gitPropertiesResourceDir = file("${project.rootDir}/src/main/deploy")
     extProperty = 'gitProps'
 }
@@ -184,56 +185,58 @@ tasks.processResources.outputs.upToDateWhen { false }  // make sure the processR
 
 // this helps junit test results show up in output
 // look at https://stackoverflow.com/a/36130467/17887564 for some more suggestions
-tasks.withType(Test) { 
-  testLogging {
-    exceptionFormat "full"
-    // events "passed", "failed" // , "started", "skipped"
-    showStandardStreams true
-    showExceptions true
-  }
+tasks.withType(Test) {
+    testLogging {
+        exceptionFormat "full"
+        // events "passed", "failed" // , "started", "skipped"
+        showStandardStreams true
+        showExceptions true
+    }
 }
 
 // spotless!
-spotless {
-    java {
-        target fileTree('.') {
-            include '**/*.java'
-            exclude '**/build/**', '**/build-*/**'
+if (false) {
+    spotless {
+        java {
+            target fileTree('.') {
+                include '**/*.java'
+                exclude '**/build/**', '**/build-*/**'
+            }
+            toggleOffOn()
+            googleJavaFormat()
+            removeUnusedImports()
+            trimTrailingWhitespace()
+            endWithNewline()
         }
-        toggleOffOn()
-        googleJavaFormat()
-        removeUnusedImports()
-        trimTrailingWhitespace()
-        endWithNewline()
-    }
-    groovyGradle {
-        target fileTree('.') {
-            include '**/*.gradle'
-            exclude '**/build/**', '**/build-*/**'
+        groovyGradle {
+            target fileTree('.') {
+                include '**/*.gradle'
+                exclude '**/build/**', '**/build-*/**'
+            }
+            greclipse()
+            indentWithSpaces(4)
+            trimTrailingWhitespace()
+            endWithNewline()
         }
-        greclipse()
-        indentWithSpaces(4)
-        trimTrailingWhitespace()
-        endWithNewline()
-    }
-    format 'xml', {
-        target fileTree('.') {
-            include '**/*.xml'
-            exclude '**/build/**', '**/build-*/**'
+        format 'xml', {
+            target fileTree('.') {
+                include '**/*.xml'
+                exclude '**/build/**', '**/build-*/**'
+            }
+            eclipseWtp('xml')
+            trimTrailingWhitespace()
+            indentWithSpaces(2)
+            endWithNewline()
         }
-        eclipseWtp('xml')
-        trimTrailingWhitespace()
-        indentWithSpaces(2)
-        endWithNewline()
-    }
-    format 'misc', {
-        target fileTree('.') {
-            include '**/*.md', '**/.gitignore'
-            exclude '**/build/**', '**/build-*/**'
+        format 'misc', {
+            target fileTree('.') {
+                include '**/*.md', '**/.gitignore'
+                exclude '**/build/**', '**/build-*/**'
+            }
+            trimTrailingWhitespace()
+            indentWithSpaces(2)
+            endWithNewline()
         }
-        trimTrailingWhitespace()
-        indentWithSpaces(2)
-        endWithNewline()
     }
 }
 // ****************************************************************************
