@@ -12,18 +12,33 @@ public class LogCommand extends InstantCommand {
 
   private String msg;
 
+  private Object[] args;
+
   public LogCommand(String message) {
-    this(message, null);
+    this(null, message, null);
   }
 
-  public LogCommand(String message, Logger constructorLogger) {
+  public LogCommand(String message, Object[] args) {
+    this(null, message, args);
+  }
+
+  public LogCommand(Logger constructorLogger, String message) {
+    this(constructorLogger, message, null);
+  }
+
+  public LogCommand(Logger constructorLogger, String message, Object[] args) {
     logger = (constructorLogger == null) ? defaultLogger : constructorLogger;
     msg = message;
+    this.args = args;
   }
 
   @Override
   public void initialize() {
-    logger.info(msg);
+    if (args == null) {
+      logger.info(msg);
+    } else {
+      logger.info(msg, args);
+    }
   }
 
   @Override
