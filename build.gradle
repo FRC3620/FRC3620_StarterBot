@@ -3,6 +3,7 @@ plugins {
     id "edu.wpi.first.GradleRIO" version "2023.2.1"
     // FRC3620 ****************************************************************
     id "com.gorylenko.gradle-git-properties" version "2.3.2"
+    id 'com.diffplug.spotless' version '6.12.0'
     // ************************************************************************
 }
 
@@ -180,6 +181,7 @@ tasks.processResources.outputs.upToDateWhen { false }  // make sure the processR
 // ****************************************************************************
 
 // FRC3620 ********************************************************************
+
 // this helps junit test results show up in output
 // look at https://stackoverflow.com/a/36130467/17887564 for some more suggestions
 tasks.withType(Test) { 
@@ -189,5 +191,49 @@ tasks.withType(Test) {
     showStandardStreams true
     showExceptions true
   }
+}
+
+// spotless!
+spotless {
+    java {
+        target fileTree('.') {
+            include '**/*.java'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        toggleOffOn()
+        googleJavaFormat()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    groovyGradle {
+        target fileTree('.') {
+            include '**/*.gradle'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        greclipse()
+        indentWithSpaces(4)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    format 'xml', {
+        target fileTree('.') {
+            include '**/*.xml'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        eclipseWtp('xml')
+        trimTrailingWhitespace()
+        indentWithSpaces(2)
+        endWithNewline()
+    }
+    format 'misc', {
+        target fileTree('.') {
+            include '**/*.md', '**/.gitignore'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        trimTrailingWhitespace()
+        indentWithSpaces(2)
+        endWithNewline()
+    }
 }
 // ****************************************************************************
