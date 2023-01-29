@@ -27,6 +27,12 @@ public class SwerveParameters  {
         super();
     }
 
+    public SwerveParameters(double width, double length) {
+        super();
+        chassisWidth = width;
+        chassisLength = length;
+    }
+
     public Double getRightFrontAbsoluteOffset() {
         return rightFrontAbsoluteOffset;
     }
