@@ -12,7 +12,7 @@ public class NavXNavigationSubsystem extends SubsystemBase implements INavigatio
 
   /** Creates a new NavXNavigationSubsystem. */
   public NavXNavigationSubsystem() {
-    SmartDashboard.putNumber("NavX Offset", 0);
+    SmartDashboard.putNumber("navx.offset", 0);
   }
 
   @Override
@@ -53,7 +53,7 @@ public class NavXNavigationSubsystem extends SubsystemBase implements INavigatio
   @Override
   public void setHeadingOffset(double headingOffset) {
     this.headingOffset = headingOffset;
-		SmartDashboard.putNumber("NavX Offset", headingOffset);
+		SmartDashboard.putNumber("navx.offset", headingOffset);
   }
 
   @Override

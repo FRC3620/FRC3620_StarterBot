@@ -7,12 +7,17 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import java.util.function.Supplier;
+
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,7 +33,7 @@ import org.usfirst.frc3620.misc.SwerveParameters;
 import org.usfirst.frc3620.misc.SwerveCalculator;
 import org.usfirst.frc3620.misc.Vector;
 
-public class DriveSubsystem extends SubsystemBase {
+public class DriveSubsystem extends SubsystemBase implements Supplier<SwerveModulePosition[]> {
 	private final double DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT = 0.3;
 	private final double AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT = 0.3;
 
@@ -42,6 +47,8 @@ public class DriveSubsystem extends SubsystemBase {
 	Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
 	INavigationSubsystem navigationSubsystem;
+
+	SwerveModulePosition[] swerveModulePositions;
 
 	private boolean logSpinTransitions = false;
 	private boolean putDriveVectorsInNetworkTables = false;
@@ -247,6 +254,14 @@ public class DriveSubsystem extends SubsystemBase {
 		spinPIDController.setTolerance(3);
 
 		fixRelativeEncoders();
+
+		swerveModulePositions = new SwerveModulePosition[] {
+			new SwerveModulePosition(),
+			new SwerveModulePosition(),
+			new SwerveModulePosition(),
+			new SwerveModulePosition()
+		};
+		fillSwerveModulePositions();
 	}
 
 	@Override
@@ -325,7 +340,30 @@ public class DriveSubsystem extends SubsystemBase {
 
 		SmartDashboard.putNumber("driver.joy.x", RobotContainer.getDriveHorizontalJoystick());
 		SmartDashboard.putNumber("driver.joy.y", RobotContainer.getDriveVerticalJoystick());
-		SmartDashboard.putNumber("driver.joy.spin", RobotContainer.getDriveSpinJoystick());	
+		SmartDashboard.putNumber("driver.joy.spin", RobotContainer.getDriveSpinJoystick());
+
+		fillSwerveModulePositions();
+	}
+
+	public SwerveModulePosition[] get() {
+		return swerveModulePositions;
+	}
+
+	void fillSwerveModulePositions() {
+		fillSwerveModulePosition(0, leftFrontDriveEncoder, leftFrontAzimuthEncoder);
+		fillSwerveModulePosition(1, rightFrontDriveEncoder, rightFrontAzimuthEncoder);
+		fillSwerveModulePosition(2, leftBackDriveEncoder, leftBackAzimuthEncoder);
+		fillSwerveModulePosition(3, rightBackDriveEncoder, rightBackAzimuthEncoder);
+	}
+
+	void fillSwerveModulePosition(int index, RelativeEncoder driveEncoder, RelativeEncoder azimuthEncoder) {
+		double distanceInInches = driveEncoder.getPosition();
+		double azimuthInDegrees0ToRight = getFixedPosition(azimuthEncoder);
+		// I don't know why we have to negate this, but we do
+		double distanceInMeters = - Units.inchesToMeters(distanceInInches);
+		double azimuthInRadians0InFront = Units.degreesToRadians(azimuthInDegrees0ToRight + 90);
+		swerveModulePositions[index].distanceMeters = distanceInMeters;
+		swerveModulePositions[index].angle = new Rotation2d(azimuthInRadians0InFront);
 	}
 
   	public void periodicManualSpinMode(){
