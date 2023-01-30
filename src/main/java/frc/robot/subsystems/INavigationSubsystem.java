@@ -19,19 +19,36 @@ public interface INavigationSubsystem {
      * @return return heading in degress; 0 is pointed away from our
      * driver, increasing angle is clockwise, and limit to -180 to 180.
      */
-    public double getCorrectedHeading();
+    public default double getCorrectedHeading() {
+        double angle = getRawHeading() + getHeadingOffset();
+
+        angle = angle % 360;
+		
+		if (angle > 180){
+			angle = -360 + angle;
+		}
+		if (angle < -180){
+			angle = 360 + angle;
+		}
+		
+		return angle;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public default double getHeadingOffset() {
+        return 0;
+    }
 
     /**
      * Set the difference between the raw heading and pointing to the opposite team
      * driver stations. Use this when we aren't pointed that way at the beginning of a match.
      * @param headingOffset in degrees
      */
-    public void setHeadingOffset(double headingOffset);
-
-    public double getHeadingOffset();
-
-    public default double getCorrectedHeading() {
-        return getRawHeading() + getHeadingOffset();
+    public default void setHeadingOffset(double headingOffset) {
+    }
 
     /**
      * return the Rotation2d for which way we are facing. Expressed as a 
@@ -51,14 +68,5 @@ public interface INavigationSubsystem {
         if (trigClassHeadingInRadians > Math.PI) trigClassHeadingInRadians -= (2 * Math.PI);
         // 0 is pointed at RED alliance driver station
         return new Rotation2d(trigClassHeadingInRadians);
-    }
-}
-
-    public default void setHeadingOffset(double headingOffset) {
-        throw new RuntimeException (new NoSuchMethodException());
-    }
-
-    public default double getHeadingOffset() {
-        return 0;
     }
 }

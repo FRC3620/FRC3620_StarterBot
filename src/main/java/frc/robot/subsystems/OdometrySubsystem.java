@@ -77,16 +77,8 @@ public class OdometrySubsystem extends SubsystemBase {
     }
 
     public Rotation2d getOdometryHeading(Alliance alliance) {
-        // 0 is pointed at opponent's driver stations, increasing value is clockwise, in degrees
-        double headingInDegrees = navigationSubsystem.getCorrectedHeading();
-        // 0 is pointed at opponent's driver stations, increasing value is CCW, in radians
-        double trigClassHeadingInRadians = -Units.degreesToRadians(headingInDegrees);
-        if (alliance == Alliance.Red) {
-            trigClassHeadingInRadians += Math.PI;
-        }
-        if (trigClassHeadingInRadians > Math.PI) trigClassHeadingInRadians -= (2 * Math.PI);
-        // 0 is pointed at RED alliance driver station
-        SmartDashboard.putNumber ("odometry.heading", Units.radiansToDegrees(trigClassHeadingInRadians));
-        return new Rotation2d(trigClassHeadingInRadians);
+        Rotation2d rv = navigationSubsystem.getOdometryHeading(alliance);
+        SmartDashboard.putNumber ("odometry.heading", rv.getDegrees());
+        return rv;
     }
 }

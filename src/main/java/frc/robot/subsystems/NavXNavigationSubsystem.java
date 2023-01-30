@@ -34,23 +34,6 @@ public class NavXNavigationSubsystem extends SubsystemBase implements INavigatio
   }
 
   @Override
-  public double getCorrectedHeading() {
-		//returns angle in the range of -180 degrees to 180 degrees with 0 being the front
-		double angle = ahrs.getAngle() + headingOffset;    //adding in offset based on initial robot position for auto
-
-		angle = angle % 360;
-		
-		if (angle > 180){
-			angle = -360 + angle;
-		}
-		if (angle < -180){
-			angle = 360 + angle;
-		}
-		
-		return angle;
-  }
-
-  @Override
   public void setHeadingOffset(double headingOffset) {
     this.headingOffset = headingOffset;
 		SmartDashboard.putNumber("navx.offset", headingOffset);
