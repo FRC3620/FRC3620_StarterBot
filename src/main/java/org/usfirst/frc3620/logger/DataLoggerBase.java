@@ -115,10 +115,8 @@ abstract public class DataLoggerBase implements IDataLogger {
 						if (filename != null) {
 							fullFilename = filename + "_" + fullFilename;
 						}
-						  logger.info("setupOutputFile filename is {}", fullFilename);
-			
 						outputFile = new File(loggingDirectory, fullFilename);
-						logger.info("setting file to {}", outputFile);
+						logger.info("setting file to {}", outputFile.getAbsolutePath());
 					}
 				}
 			}

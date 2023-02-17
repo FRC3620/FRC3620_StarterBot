@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2023.2.1"
+    id "edu.wpi.first.GradleRIO" version "2023.3.2"
     // FRC3620 ****************************************************************
     id "com.gorylenko.gradle-git-properties" version "2.3.2"
     // later:
@@ -104,9 +104,9 @@ test {
         setFailOnNoMatchingTests(false)
 
         // run this if nothing else so only this runs
-        includeTestsMatching 'DummyTest'
+        includeTestsMatching 'FilenameTest'
 
-        includeTestsMatching 'RobotParametersTest'
+        // includeTestsMatching 'RobotParametersTest'
     }
     // ****************************************************************************
 }

@@ -1,8 +1,8 @@
 package frc.robot;
 
-import java.util.Set;
 import java.util.function.Consumer;
 
+import org.usfirst.frc3620.logger.AsyncDataLogger;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.DataLogger;
 import org.usfirst.frc3620.logger.EventLogging;
@@ -31,6 +31,9 @@ public class Robot extends TimedRobot {
   private Logger logger;
 
   static private RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
+
+  AsyncDataLogger<ASyncDataLoggerTestObject> testLogger;
+  int testLoggerCount = 0;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -73,6 +76,8 @@ public class Robot extends TimedRobot {
     robotDataLogger.start();
 
     FileSaver.add("networktables.ini");
+
+    testLogger = new AsyncDataLogger<>("foo.txt", 1000);
   }
 
   /**
@@ -89,6 +94,8 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    testLogger.send(new ASyncDataLoggerTestObject(testLoggerCount++));
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
