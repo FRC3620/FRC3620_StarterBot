@@ -10,7 +10,10 @@ public class FastDataLoggerCollections extends FastDataLoggerBase {
 
     @Override
     public String start() {
-        int initialSize = (int) (maxLengthInSeconds * ( 1.0 / getInterval() ));
+        int initialSize = 100;
+        if (getInterval() > 0) {
+            initialSize = (int) (maxLengthInSeconds * ( 1.0 / getInterval() ));
+        }
         data = new ArrayList<>(initialSize);
         timestamps = new ArrayList<>(initialSize);
 
@@ -34,7 +37,9 @@ public class FastDataLoggerCollections extends FastDataLoggerBase {
             for (int c = 0; c < row.length; c++) {
                 w.print(",");
                 Object o = row[c];
-                if (o instanceof Number) {
+                if (o instanceof Integer) {
+                    w.format("%d", o);
+                } else if (o instanceof Number) {
                     w.format("%.6f", o);
                 } else {
                     w.print(o);

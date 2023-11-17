@@ -6,4 +6,6 @@ public interface IFastDataLogger extends IDataLogger {
     public void done();
 
     public boolean isDone();
+
+    public void update();
 }
