@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 /** Add your docs here. */
+@SuppressWarnings("removal")
 public class MotorSetup {
     public static void resetMaxToKnownState(CANSparkMaxSendable x, boolean inverted) {
         // TODO set to factory default 
