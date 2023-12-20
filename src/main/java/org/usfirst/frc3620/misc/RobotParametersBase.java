@@ -16,6 +16,7 @@ public class RobotParametersBase {
         macAddress = "";
         competitionRobot = false;
         name = "";
+        makeAllCANDevices = false;
     }
 
     public String getMacAddress() {
@@ -30,13 +31,14 @@ public class RobotParametersBase {
         return name;
     }
 
+    // TODO, looks like Jackson is not serializing this field.
     public boolean shouldMakeAllCANDevices() {
         return makeAllCANDevices;
     }
 
     @Override
     public String toString() {
-        return "RobotParametersBase [macAddress=" + macAddress + ", competitionRobot=" + competitionRobot + ", name="
+        return super.toString() + " [macAddress=" + macAddress + ", competitionRobot=" + competitionRobot + ", name="
                 + name + ", makeAllCANDevices=" + makeAllCANDevices + "]";
     }
 }

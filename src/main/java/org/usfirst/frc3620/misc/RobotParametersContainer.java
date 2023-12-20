@@ -94,11 +94,15 @@ public class RobotParametersContainer {
             }
         }
         if (rv != null) {
+            logger.info("robot parameters {}: {}", rv.getClass(), rv);
+            /*
             try {
+                // looks like Jackson is not serializing all fields?
                 logger.info("robot parameters {}: {}", rv.getClass(), objectMapper.writeValueAsString(rv));
             } catch (JsonProcessingException ex) {
                 logger.error("Unable to format JSON of RobotParameters for logging: {}", ex);
             }
+            */
         }
         return (T) rv;
     }

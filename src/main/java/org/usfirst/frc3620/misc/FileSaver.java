@@ -16,7 +16,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class FileSaver {
     public final static Logger logger = EventLogging.getLogger(FileSaver.class, EventLogging.Level.INFO);
 
-
     Queue<Path> path_queue = new ConcurrentLinkedQueue<>();
     Set<Path> completed_paths = new HashSet<>();
 
@@ -27,7 +26,10 @@ public class FileSaver {
         path = path.toAbsolutePath().normalize();
         File file = path.toFile();
         if (file.isFile()) {
+            logger.info("added {} to queue", path);
             fileSaver.path_queue.add(path);
+        } else {
+            logger.error("unable to add {} to queue, not a file", path);
         }
     }
 
@@ -52,6 +54,8 @@ public class FileSaver {
                     while (true) {
                         Path input_path = path_queue.poll();
                         if (input_path == null) break;
+
+                        logger.info ("got {} from queue", input_path);
 
                         if (completed_paths.contains(input_path))
                             continue;
