@@ -1,6 +1,5 @@
 package frc.robot;
 
-import java.util.Set;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
