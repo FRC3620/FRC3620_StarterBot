@@ -4,40 +4,69 @@
 
 package org.usfirst.frc3620.misc;
 
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 /** Add your docs here. */
-@SuppressWarnings("removal")
 public class MotorSetup {
-    public static void resetMaxToKnownState(CANSparkMaxSendable x, boolean inverted) {
-        // TODO set to factory default 
+    boolean inverted = false;
+    boolean coast = false;
+    Integer currentLimit = null;
+    static private int defaultCurrentLimit = 10;
+
+    public MotorSetup setInverted (boolean inverted) {
+        this.inverted = inverted;
+        return this;
+    }
+
+    public MotorSetup setCoast (boolean coast) {
+        this.coast = coast;
+        return this;
+    }
+
+    public MotorSetup setCurrentLimit (int currentLimit) {
+        this.currentLimit = currentLimit;
+        return this;
+    }
+
+    public void apply(CANSparkMax x) {
+        x.restoreFactoryDefaults();
         x.setInverted(inverted);
-        x.setIdleMode(IdleMode.kCoast);
+        x.setIdleMode(coast ? IdleMode.kCoast : IdleMode.kBrake);
         x.setOpenLoopRampRate(1);
         x.setClosedLoopRampRate(1);
-        x.setSmartCurrentLimit(80);
+        x.setSmartCurrentLimit(currentLimit == null ? defaultCurrentLimit : currentLimit);
     }
     
-    public static void resetTalonFXToKnownState(WPI_TalonFX m, InvertType invert) {
+    public void apply(TalonFX x) {
         int kTimeoutMs = 0;
-        m.configFactoryDefault();
-        m.setInverted(invert);
-    
-        /*
-    
-        //set max and minimum(nominal) speed in percentage output
-        m.configNominalOutputForward(+1, kTimeoutMs);
-        m.configNominalOutputReverse(-1, kTimeoutMs);
-        m.configPeakOutputForward(+1, kTimeoutMs);
-        m.configPeakOutputReverse(-1, kTimeoutMs);
-        
-        StatorCurrentLimitConfiguration amprage=new StatorCurrentLimitConfiguration(true,40,0,0); 
-        m.configStatorCurrentLimit(amprage);
-        */
-        m.setNeutralMode(NeutralMode.Coast);
+        var talonFXConfiguration = new TalonFXConfiguration();
+
+        var motorOutputConfigs = new MotorOutputConfigs();
+        motorOutputConfigs.Inverted = inverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+        motorOutputConfigs.NeutralMode = coast ? NeutralModeValue.Coast : NeutralModeValue.Brake;
+        talonFXConfiguration.MotorOutput = motorOutputConfigs;
+
+        var openLoopRamps = new OpenLoopRampsConfigs();
+        openLoopRamps.VoltageOpenLoopRampPeriod = 1;
+        talonFXConfiguration.OpenLoopRamps = openLoopRamps;
+
+        var closedLoopRamps = new ClosedLoopRampsConfigs();
+        closedLoopRamps.VoltageClosedLoopRampPeriod = 1;
+        talonFXConfiguration.ClosedLoopRamps = closedLoopRamps;
+
+        CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs().withStatorCurrentLimit((currentLimit == null) ? defaultCurrentLimit : currentLimit).withStatorCurrentLimitEnable(true);
+        talonFXConfiguration.CurrentLimits = currentLimitsConfigs;
+
+        x.getConfigurator().apply(talonFXConfiguration);
     }
     
 }

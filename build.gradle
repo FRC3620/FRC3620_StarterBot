@@ -111,10 +111,7 @@ test {
         // https://stackoverflow.com/a/52879530/17887564
         setFailOnNoMatchingTests(false)
 
-        // run this if nothing else so only this runs
-        includeTestsMatching 'DummyTest'
-
-        includeTestsMatching 'RobotParametersTest'
+        // includeTestsMatching 'DummyTest'
     }
     // ****************************************************************************
 }

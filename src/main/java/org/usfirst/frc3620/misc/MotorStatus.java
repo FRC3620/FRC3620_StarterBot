@@ -1,10 +1,6 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package org.usfirst.frc3620.misc;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
@@ -71,11 +67,11 @@ public class MotorStatus {
 
   public void gatherActuals(TalonFX m, String prefix) {
     if (m != null) {
-      actualSensorVelocity = m.getSelectedSensorVelocity();
+      actualSensorVelocity = m.getVelocity().getValue();
       actualRPM = actualSensorVelocity * 600 / 2048;
-      statorCurrent = m.getStatorCurrent();
-      supplyCurrent = m.getSupplyCurrent();
-      appliedPower = m.getMotorOutputPercent() / 100.0;
+      statorCurrent = m.getStatorCurrent().getValue();
+      supplyCurrent = m.getSupplyCurrent().getValue();
+      appliedPower = m.getDutyCycle().getValue() / 100.0;
     } else {
       actualSensorVelocity = -1;
       actualRPM = -1;
