@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
 import frc.robot.Robot;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 
 import edu.wpi.first.wpilibj.Filesystem;
@@ -23,7 +23,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class RobotParametersContainer {
-    public final static Logger logger = EventLogging.getLogger(RobotParametersBase.class, EventLogging.Level.INFO);
+    public final static Logger logger = EventLogging.getLogger(RobotParametersBase.class, EventLogging.FRC3620Level.INFO);
 
     static ObjectMapper objectMapper = new ObjectMapper();
 

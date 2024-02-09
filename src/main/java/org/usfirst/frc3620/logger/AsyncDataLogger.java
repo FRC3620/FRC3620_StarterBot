@@ -1,7 +1,7 @@
 package org.usfirst.frc3620.logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -13,7 +13,7 @@ public class AsyncDataLogger<T extends AsyncDataLoggerDatum> extends SubsystemBa
   ArrayBlockingQueue<AsyncDataLoggerMessage> queue;
   int droppedMessageCount = 0;
   int sentMessageCount = 0;
-  Logger logger = EventLogging.getLogger(getClass(), EventLogging.Level.INFO);
+  Logger logger = EventLogging.getLogger(getClass(), EventLogging.FRC3620Level.INFO);
 
   public AsyncDataLogger(String filename, int capacity) {
     queue = new ArrayBlockingQueue<>(capacity);

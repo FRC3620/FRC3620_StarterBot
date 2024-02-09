@@ -3,10 +3,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.LogCommand;
-import org.usfirst.frc3620.logger.EventLogging.Level;
+import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 
 import frc.robot.commands.ExampleCommand;
@@ -25,7 +25,7 @@ import org.usfirst.frc3620.misc.XBoxConstants;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  public final static Logger logger = EventLogging.getLogger(RobotContainer.class, Level.INFO);
+  public final static Logger logger = EventLogging.getLogger(RobotContainer.class, FRC3620Level.INFO);
   
   // need this
   public static CANDeviceFinder canDeviceFinder;

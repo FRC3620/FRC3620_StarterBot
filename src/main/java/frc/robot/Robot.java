@@ -2,10 +2,10 @@ package frc.robot;
 
 import java.util.function.Consumer;
 
-import org.slf4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.usfirst.frc3620.logger.DataLogger;
 import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.EventLogging.Level;
+import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
 import org.usfirst.frc3620.misc.FileSaver;
 import org.usfirst.frc3620.misc.GitNess;
 import org.usfirst.frc3620.misc.RobotMode;
@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    logger = EventLogging.getLogger(Robot.class, Level.INFO);
+    logger = EventLogging.getLogger(Robot.class, FRC3620Level.INFO);
     logger.info ("I'm alive! {}", GitNess.gitDescription());
 
     PortForwarder.add (10080, "wpilibpi.local", 80);

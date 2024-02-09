@@ -1,6 +1,6 @@
 package org.usfirst.frc3620.misc;
 
-import org.slf4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class FileSaver {
-    public final static Logger logger = EventLogging.getLogger(FileSaver.class, EventLogging.Level.INFO);
+    public final static Logger logger = EventLogging.getLogger(FileSaver.class, EventLogging.FRC3620Level.INFO);
 
     Queue<Path> path_queue = new ConcurrentLinkedQueue<>();
     Set<Path> completed_paths = new HashSet<>();

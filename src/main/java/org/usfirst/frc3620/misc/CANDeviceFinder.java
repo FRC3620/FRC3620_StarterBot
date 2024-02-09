@@ -4,9 +4,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.*;
 
-import org.slf4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.EventLogging.Level;
+import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
 
 import edu.wpi.first.hal.can.CANJNI;
 
@@ -16,7 +16,7 @@ import edu.wpi.first.hal.can.CANJNI;
  * https://www.chiefdelphi.com/t/how-to-detect-missing-can-devices-from-java/147675/10
  */
 public class CANDeviceFinder {
-    static Logger logger = EventLogging.getLogger(CANDeviceFinder.class, Level.INFO);
+    static Logger logger = EventLogging.getLogger(CANDeviceFinder.class, FRC3620Level.INFO);
 
     Set<CANDeviceId> deviceSet = new TreeSet<>();
 

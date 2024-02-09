@@ -1,58 +1,101 @@
 package org.usfirst.frc3620.logger;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class EventLogging {
 
     // make some levels that correspond to the different SLF4J logging
     // methods. Have the mappings to the underlying j.u.l logging levels.
-    public enum Level {
-        TRACE(java.util.logging.Level.FINEST), //
-        DEBUG(java.util.logging.Level.FINE), //
-        INFO(java.util.logging.Level.INFO), //
-        WARN(java.util.logging.Level.WARNING), //
-        ERROR(java.util.logging.Level.SEVERE);
+    public enum FRC3620Level {
+        TRACE(org.apache.logging.log4j.Level.TRACE), //
+        DEBUG(org.apache.logging.log4j.Level.DEBUG), //
+        INFO(org.apache.logging.log4j.Level.INFO), //
+        WARN(org.apache.logging.log4j.Level.WARN), //
+        ERROR(org.apache.logging.log4j.Level.ERROR);
 
-        java.util.logging.Level julLevel;
+        org.apache.logging.log4j.Level log4jLevel;
 
-        Level(java.util.logging.Level _julLevel) {
-            julLevel = _julLevel;
+        FRC3620Level(org.apache.logging.log4j.Level _julLevel) {
+            log4jLevel = _julLevel;
         }
     }
 
     /**
-     * Get an SLF4J logger for a class. Set the underlying j.u.l logger to the
-     * desired level.
+     * Get an log4j2 logger for a class.
      * 
      * @param clazz
      *            class for the logger
-     * @param l
-     *            Level that we want to log at
      * @return
      */
-    static public org.slf4j.Logger getLogger(Class<?> clazz, Level l) {
-        return getLogger(clazz.getName(), l);
+    static public Logger getLogger(Class<?> clazz) {
+        return getLogger(clazz.getName(), null);
     }
 
     /**
-     * Get an SLF4J logger for a name. Set the underlying j.u.l logger to the
-     * desired level.
+     * Get an log4j2 logger for a class.
      * 
-     * @param sClazz
-     *            name for the logger
-     * @param l
+     * @param clazz
+     *            class for the logger
+     * @param level
      *            Level that we want to log at
      * @return
      */
-    static public org.slf4j.Logger getLogger(String sClazz, Level l) {
-        //setup();
-        // set up the underlying logger to log at the level we want
-        //java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger(sClazz);
-        //julLogger.setLevel(l.julLevel);
+    static public Logger getLogger(Class<?> clazz, FRC3620Level level) {
+        return getLogger(clazz.getName(), level);
+    }
 
-        // and return the SLF4J logger.
-        org.slf4j.Logger rv = org.slf4j.LoggerFactory.getLogger(sClazz);
+    /**
+     * Get an log4j2 logger for a class.
+     * 
+     * @param sClazz
+     *            name for the logger
+     * @return
+     */
+    static public Logger getLogger(String sClazz) {
+        return getLogger(sClazz, null);
+    }
+
+    /**
+     * Get an log4j2 logger for a class.
+     * 
+     * @param sClazz
+     *            name for the logger
+     * @param level
+     *            Level that we want to log at
+     * @return
+     */
+    static public Logger getLogger(String sClazz, FRC3620Level level) {
+        Logger rv = LogManager.getLogger(sClazz);
+        if (level != null) {
+            setLoggerLevel(sClazz, level);
+        }
         return rv;
+    }
+
+    static LoggerContext log4jLoggerContext = null;
+    static Configuration log4jConfiguration = null;
+
+    static LoggerConfig getLoggerConfig(String sClazz) {
+        if (log4jConfiguration == null) {
+            log4jLoggerContext = (LoggerContext) LogManager.getContext(false);
+            log4jConfiguration = log4jLoggerContext.getConfiguration();
+        }
+        return log4jConfiguration.getLoggerConfig(sClazz);
+    }
+
+    public static void setLoggerLevel (String sClazz, FRC3620Level newLevel) {
+            LoggerConfig loggerConfig = getLoggerConfig(sClazz); 
+            org.apache.logging.log4j.Level currentLevel = loggerConfig.getLevel();
+            if (!currentLevel.equals(newLevel.log4jLevel)) {
+                loggerConfig.setLevel(newLevel.log4jLevel);
+                log4jLoggerContext.updateLoggers();  // This causes all Loggers to refetch information from their LoggerConfig.
+            }
     }
     
     /**
@@ -61,7 +104,7 @@ public class EventLogging {
      * @param logger
      * 			  logger to log to.
      */
-    public static void commandMessage (org.slf4j.Logger logger) {
+    public static void commandMessage (Logger logger) {
   	  Throwable t = new Throwable();
   	  StackTraceElement[] stackTraceElement = t.getStackTrace();
   	  logger.info("command {}", stackTraceElement[1].getMethodName());

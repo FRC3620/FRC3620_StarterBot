@@ -3,8 +3,8 @@ package org.usfirst.frc3620.logger;
 import java.io.*;
 import java.util.*;
 
-import org.slf4j.Logger;
-import org.usfirst.frc3620.logger.EventLogging.Level;
+import org.apache.logging.log4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
 
 abstract public class DataLoggerBase implements IDataLogger {
 	boolean started /* = false */;
@@ -15,7 +15,7 @@ abstract public class DataLoggerBase implements IDataLogger {
 	String filename = null;
 	Date filenameTimestamp = null;
 
-	Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+	Logger logger = EventLogging.getLogger(getClass(), FRC3620Level.INFO);
 
 	Map<String, Object> metadata = new TreeMap<>();
 
