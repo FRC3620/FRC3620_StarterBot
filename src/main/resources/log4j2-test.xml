@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="INFO" packages="org.usfirst.frc3620.logger.log4j2">
+<Configuration status="INFO">
     <Appenders>
-        <!--
         <Console name="Console">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
-        -->
         <Routing name="File">
             <TimeIsSetFilter/>
             <Routes pattern="">
@@ -23,7 +21,10 @@
     <Loggers>
         <ASyncRoot level="trace">
             <AppenderRef ref="File"/>
+            <AppenderRef ref="Console"/>
+            <!--
             <AppenderRef ref="DS"/>
+            -->
         </ASyncRoot>
     </Loggers>
 </Configuration>

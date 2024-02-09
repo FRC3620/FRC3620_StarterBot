@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="INFO" packages="org.usfirst.frc3620.logger.log4j2">
     <Appenders>
+        <!--
         <Console name="Console">
             <PatternLayout pattern="%-5level %c{1.} %msg%n"/>
         </Console>
+        -->
         <Routing name="LoggingFile">
             <TimeIsSetFilter/>
             <Routes pattern="x">
@@ -17,10 +19,6 @@
         <DriverStation name="DS">
             <PatternLayout pattern="%-5level %c{1.} %msg%n"/>
         </DriverStation>
-        <!--
-        <DriverStation_v2 name="DS2"/>
-        <StringAppender name="SA"/>
-        -->
     </Appenders>
     <Loggers>
         <ASyncRoot level="trace">
