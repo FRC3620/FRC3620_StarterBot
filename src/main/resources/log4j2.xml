@@ -1,33 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="INFO" packages="org.usfirst.frc3620.logger.log4j2">
     <Appenders>
-        <!--
         <Console name="Console">
             <PatternLayout pattern="%-5level %c{1.} %msg%n"/>
         </Console>
-        -->
-        <Routing name="LoggingFile">
+        <Routing name="File">
             <TimeIsSetFilter/>
-            <Routes pattern="x">
+            <Routes pattern="">
                 <Route>
-                    <File name="MyFile" createOnDemand="true" fileName="log-${date:yyyy_MM_dd HH.mm.ss}.log">
-                        <PatternLayout pattern="%d %c{1.} %p %m%n"/>
+                    <File name="MyFile" createOnDemand="true" fileName="${roborio:logdir}/${roborio:timestamp}.log">
+                        <PatternLayout pattern="%d %p %c{1.} [%t] %m%n"/>
                     </File>
                 </Route>
             </Routes>
         </Routing>
         <DriverStation name="DS">
-            <PatternLayout pattern="%-5level %c{1.} %msg%n"/>
+            <PatternLayout pattern="%c{1.} - %msg%n"/>
         </DriverStation>
     </Appenders>
     <Loggers>
-        <ASyncRoot level="trace">
+        <Root level="trace">
+            <AppenderRef ref="File"/>
             <AppenderRef ref="DS"/>
-            <AppenderRef ref="LoggingFile"/>
             <!--
             <AppenderRef ref="Console"/>
-            <AppenderRef ref="SA"/>
             -->
-        </AsyncRoot>
+        </Root>
     </Loggers>
 </Configuration>
