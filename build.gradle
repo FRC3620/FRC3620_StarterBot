@@ -81,8 +81,6 @@ dependencies {
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
 
-    // implementation 'com.google.code.gson:gson:2.8.9'
-
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.10'
     implementation group: 'org.slf4j', name: 'jul-to-slf4j', version: '2.0.10' // JUL bridge
@@ -124,6 +122,21 @@ test {
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
 
     // FRC3620 ********************************************************************
+    // log4j2 debugging
+    //systemProperty 'log4j2.debug', 'true'
+    //systemProperty 'AsyncLogger.RingBufferSize', '2048'
+    systemProperty 'log4j2.is.webapp', 'false'
+    systemProperty 'log4j2.enable.threadlocals', 'true'
+    systemProperty 'log4j2.contextSelector', 'org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector'
+
+    if (useG1GC) {
+        jvmArgs "-XX:+UseG1GC"
+        jvmArgs "-XX:MaxGCPauseMillis=1"
+        jvmArgs "-XX:GCTimeRatio=1"
+    } else {
+        jvmArgs '-XX:+UseSerialGC'
+    }
+
     // test wonderfulness
     filter {
         // https://stackoverflow.com/a/52879530/17887564

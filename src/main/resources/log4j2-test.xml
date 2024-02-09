@@ -19,12 +19,12 @@
         </DriverStation>
     </Appenders>
     <Loggers>
-        <ASyncRoot level="trace">
+        <Root level="trace">
             <AppenderRef ref="File"/>
             <AppenderRef ref="Console"/>
             <!--
             <AppenderRef ref="DS"/>
             -->
-        </ASyncRoot>
+        </Root>
     </Loggers>
 </Configuration>
