@@ -3,6 +3,8 @@ package org.usfirst.frc3620.logger;
 import java.io.File;
 import java.util.Date;
 
+import org.usfirst.frc3620.misc.VoidSupplier;
+
 public interface IDataLogger {
     public void setLoggingDirectory(File loggingDirectory);
 
@@ -13,6 +15,8 @@ public interface IDataLogger {
     public void setInterval(double seconds);
 
     public double getInterval();
+
+    public void addPrelude(VoidSupplier a);
 
     public void addDataProvider(String name, 
             IDataLoggerDataProvider iDataLoggerDataProvider);
