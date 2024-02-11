@@ -4,11 +4,29 @@
 
 package frc.robot.subsystems;
 
+import org.usfirst.frc3620.misc.CANSparkMaxSendable;
+import org.usfirst.frc3620.misc.CANSparkMaxSendableWrapper;
+import org.usfirst.frc3620.misc.FakeMotor;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ExampleSubsystem extends SubsystemBase {
+  FakeMotor motor;
+  CANSparkMaxSendable max;
+  CANSparkMax max2;
   /** Creates a new ExampleSubsystem. */
-  public ExampleSubsystem() {}
+  public ExampleSubsystem() {
+    motor = new FakeMotor(99);
+    max = new CANSparkMaxSendable(11, MotorType.kBrushless);
+    max2 = new CANSparkMax(12, MotorType.kBrushless);
+    CANSparkMaxSendableWrapper maxW = new CANSparkMaxSendableWrapper(max2);
+    addChild("max", max);
+    addChild("ymax3", motor);
+    addChild("zmax2", maxW);
+  }
 
   @Override
   public void periodic() {
