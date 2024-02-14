@@ -24,7 +24,7 @@ public class ExampleSubsystem extends SubsystemBase {
     max2 = new CANSparkMax(12, MotorType.kBrushless);
     CANSparkMaxSendableWrapper maxW = new CANSparkMaxSendableWrapper(max2);
     addChild("max", max);
-    addChild("ymax3", motor);
+    addChild("max3", motor);
     addChild("zmax2", maxW);
   }
 

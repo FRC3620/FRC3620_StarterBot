@@ -5,14 +5,14 @@ import java.util.*;
 
 import org.apache.logging.log4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
-import org.usfirst.frc3620.misc.VoidSupplier;
 
 abstract public class DataLoggerBase implements IDataLogger {
 	boolean started /* = false */;
 
 	List<NamedDataProvider> namedDataProviders = new ArrayList<>();
 
-	List<VoidSupplier> preludes = new ArrayList<>();
+	List<DataLoggerPrelude> preludes = new ArrayList<>();
+	List<DataLoggerPostlude> postludes = new ArrayList<>();
 
 	File loggingDirectory = LoggingMaster.getLoggingDirectory();
 	String filename = null;
@@ -42,11 +42,20 @@ abstract public class DataLoggerBase implements IDataLogger {
 	}
 
 	@Override
-	public void addPrelude(VoidSupplier voidSupplier) {
+	public void addPrelude(DataLoggerPrelude prelude) {
 		if (!started) {
-			preludes.add(voidSupplier);
+			preludes.add(prelude);
 		} else {
 			logger.error("Cannot addPrelude(...) after start()");
+		}
+	}
+
+	@Override
+	public void addPostlude(DataLoggerPostlude postlude) {
+		if (!started) {
+			postludes.add(postlude);
+		} else {
+			logger.error("Cannot addPostlude(...) after start()");
 		}
 	}
 
