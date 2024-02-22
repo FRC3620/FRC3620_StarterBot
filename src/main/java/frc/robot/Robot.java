@@ -1,10 +1,21 @@
 package frc.robot;
 
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
+import org.reflections.Reflections;
+import org.reflections.scanners.MethodAnnotationsScanner;
+import org.reflections.scanners.Scanner;
+import org.reflections.scanners.Scanners;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.DataLogger;
 import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.Telemetry;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.FileSaver;
 import org.usfirst.frc3620.misc.GitNess;
@@ -72,7 +83,12 @@ public class Robot extends TimedRobot {
     robotDataLogger.start();
 
     FileSaver.add("networktables.ini");
+
+    lookForAnnotations();
   }
+
+  @Telemetry(name="foo")
+  void foo() { }
 
   /**
    * This function is called every robot packet, no matter the mode. Use this for items like
@@ -203,6 +219,19 @@ public class Robot extends TimedRobot {
         hasCANBusBeenLogged = true;
       }
     }
+  }
+
+  void lookForAnnotations() {
+    Reflections reflections = new Reflections(new ConfigurationBuilder()
+    .forPackage("frc.robot")
+    .setScanners(Scanners.MethodsAnnotated));
+
+    Set<Method> types = reflections.getMethodsAnnotatedWith(Telemetry.class);
+    List<String> annotatedClasses = types.stream()
+        .map(clazz -> clazz.getAnnotation(Telemetry.class)
+            .name())
+        .collect(Collectors.toList());
+    System.out.println(annotatedClasses);
   }
 
 }

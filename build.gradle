@@ -64,7 +64,8 @@ dependencies {
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
 
-    // implementation 'com.google.code.gson:gson:2.8.9'
+    // so we can scan for annotations
+    implementation group: 'org.reflections', name: 'reflections', version: '0.10.2'
 
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.9'
