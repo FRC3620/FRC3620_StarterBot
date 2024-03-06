@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.usfirst.frc3620.misc.CANDeviceType;
+import org.usfirst.frc3620.misc.JoeController;
 import org.usfirst.frc3620.misc.RobotParametersContainer;
 import org.usfirst.frc3620.misc.XBoxConstants;
 
@@ -40,8 +41,8 @@ public class RobotContainer {
   private static ExampleSubsystem exampleSubsystem;
 
   // joysticks here....
-  public static Joystick driverJoystick;
-  public static Joystick operatorJoystick;
+  public static JoeController driverJoystick;
+  public static JoeController operatorJoystick;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -83,11 +84,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    driverJoystick = new Joystick(0);
-    operatorJoystick = new Joystick(1);
+    driverJoystick = new JoeController(0);
+    operatorJoystick = new JoeController(1);
 
-    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
-      .onTrue(new LogCommand("'A' button hit"));
+    driverJoystick.button(XBoxConstants.BUTTON_A).onTrue(new LogCommand("'A' button hit"));
 
   }
 
