@@ -14,7 +14,7 @@ public class LoggingMaster {
     private static String defaultLogLocation = "/home/lvuser/logs"; 
 
     // http://javarevisited.blogspot.com/2014/05/double-checked-locking-on-singleton-in-java.html
-    public static Date getTimestamp() {
+    public static synchronized Date getTimestamp() {
         if (_timestamp == null) { // do a quick check (no overhead from
                                         // synchonized)
             synchronized (LoggingMaster.class) {
