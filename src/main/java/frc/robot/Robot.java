@@ -2,8 +2,10 @@ package frc.robot;
 
 import java.util.function.Consumer;
 
-import org.apache.logging.log4j.Logger;
-import org.usfirst.frc3620.logger.DataLogger;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
 import org.usfirst.frc3620.misc.FileSaver;
@@ -12,7 +14,6 @@ import org.usfirst.frc3620.misc.RobotMode;
 
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -22,12 +23,14 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
 
-  private Logger logger;
+  private org.apache.logging.log4j.Logger logger;
+
+  RobotDataLogger robotDataLogger;
 
   static private RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
 
@@ -37,6 +40,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    org.littletonrobotics.junction.Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
+    org.littletonrobotics.junction.Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+    
     logger = EventLogging.getLogger(Robot.class, FRC3620Level.INFO);
     logger.info ("I'm alive! {}", GitNess.gitDescription());
 
@@ -66,10 +72,9 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     // get data logging going
-    DataLogger robotDataLogger = new DataLogger();
-    new RobotDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);
-    robotDataLogger.setInterval(0.25);
-    robotDataLogger.start();
+    org.littletonrobotics.junction.Logger.start();
+
+    robotDataLogger = new RobotDataLogger(RobotContainer.canDeviceFinder);
 
     FileSaver.add("networktables.ini");
 

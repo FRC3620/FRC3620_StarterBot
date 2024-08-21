@@ -1,185 +1,82 @@
 package org.usfirst.frc3620.logger;
 
-import java.io.*;
 import java.util.*;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
 
 abstract public class DataLoggerBase implements IDataLogger {
-	boolean started /* = false */;
-
-	List<NamedDataProvider> namedDataProviders = new ArrayList<>();
+	List<NamedDataSupplier> namedDataProviders = new ArrayList<>();
 
 	List<DataLoggerPrelude> preludes = new ArrayList<>();
 	List<DataLoggerPostlude> postludes = new ArrayList<>();
 
-	File loggingDirectory = LoggingMaster.getLoggingDirectory();
-	String filename = null;
-	Date filenameTimestamp = null;
-
 	Logger logger = EventLogging.getLogger(getClass(), FRC3620Level.INFO);
 
-	Map<String, Object> metadata = new TreeMap<>();
-
-	private double intervalInSeconds = 0.100;
-
-	private File outputFile;
 	Timer timer;
 
 	@Override
-	public void setLoggingDirectory(File loggerDirectory) {
-		this.loggingDirectory = loggerDirectory;
-	}
-
-	@Override
-	public void addDataProvider(String _name, IDataLoggerDataProvider _iDataLoggerDataProvider) {
-		if (!started) {
-			namedDataProviders.add(new NamedDataProvider(_name, _iDataLoggerDataProvider));
-		} else {
-			logger.error("Cannot addDataProvider(...) after start()");
-		}
+	public void addDataProvider(String _name, Supplier<Object> dataLoggerDataSupplier) {
+		namedDataProviders.add(new NamedDataSupplier(_name, dataLoggerDataSupplier));
 	}
 
 	@Override
 	public void addPrelude(DataLoggerPrelude prelude) {
-		if (!started) {
-			preludes.add(prelude);
-		} else {
-			logger.error("Cannot addPrelude(...) after start()");
-		}
+		preludes.add(prelude);
 	}
 
 	@Override
 	public void addPostlude(DataLoggerPostlude postlude) {
-		if (!started) {
-			postludes.add(postlude);
-		} else {
-			logger.error("Cannot addPostlude(...) after start()");
+		postludes.add(postlude);
+	}
+
+	@Override
+	abstract public void addMetadata(String s, Object metadata);
+
+	public void setup() {
+	}
+
+	public void runCycle() {
+		runCyclePrelude();
+		for (var prelude : preludes) {
+			prelude.dataLoggerPrelude();
 		}
-	}
 
-	@Override
-	public void setFilename(String _filename) {
-		logger.info("setFilename(\"{}\")", _filename);
-		if (!started) {
-			filename = _filename;
-		} else {
-			logger.error("Cannot setFilename(...) after start()");
-		}
-	}
-
-	@Override
-	public void setFilenameTimestamp(Date date) {
-		filenameTimestamp = date;
-	}
-
-	@Override
-	public void addMetadata(String s, double d) {
-		if (!started) {
-			metadata.put(s, d);
-		} else {
-			logger.error("Cannot addMetadata(...) after start()");
-		}
-	}
-
-	@Override
-	public void addMetadata(String s, String v) {
-		if (!started) {
-			metadata.put(s, v);
-		} else {
-			logger.error("Cannot addMetadata(...) after start()");
-		}
-	}
-
-	@Override
-	public void setInterval(double seconds) {
-		intervalInSeconds = seconds;
-	}
-
-	@Override
-	public double getInterval() {
-		return intervalInSeconds;
-	}
-
-	double getTimeInSeconds() {
-		return edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
-	}
-
-	@Override
-	public String start() {
-		started = true;
-
-		setupOutputFile();
-
-		startTimer();
-
-		if (outputFile == null) {
-			return "";
-		} else {
-			return outputFile.getAbsolutePath();
-		}
-	}
-
-	File setupOutputFile() {
-		if (outputFile == null) {
-			synchronized (DataLoggerBase.this) {
-				if (outputFile == null) {
-					Date timestamp = filenameTimestamp;
-					if (timestamp == null) {
-						timestamp = LoggingMaster.getTimestamp();
-					}
-					if (timestamp != null) {
-						String _timestampString = LoggingMaster.convertTimestampToString(timestamp);
-						String fullFilename = _timestampString + ".csv";
-						if (filename != null) {
-							fullFilename = filename + "_" + fullFilename;
-						}
-						  logger.info("setupOutputFile filename is {}", fullFilename);
-			
-						outputFile = new File(loggingDirectory, fullFilename);
-						logger.info("setting file to {}", outputFile);
-					}
-				}
+		int i = 0;
+		for (NamedDataSupplier namedDataProvider : namedDataProviders) {
+			try {
+				saveValue(i, namedDataProvider.name, namedDataProvider.dataLoggerDataSupplier.get());
+			} catch (Exception e) {
+				saveErrorValue(i, namedDataProvider.name, e);
 			}
+			i++;
 		}
-		return outputFile;
+
+		for (var postlude : postludes) {
+			postlude.dataLoggerPostlude();
+		}
+		runCyclePrelude();
 	}
 
-	public File getOutputFile() {
-		return outputFile;
+	abstract void saveValue(int i, String name, Object value);
+
+	abstract void saveErrorValue(int i, String name, Exception e);
+
+	public void runCyclePrelude() {
 	}
 
-	static void writeHeader(PrintWriter w, Iterable<NamedDataProvider> namedDataProviders,
-			Map<String, Object> metadata) {
-		w.print("meta,time,timeSinceStart");
-		for (NamedDataProvider namedDataProvider : namedDataProviders) {
-			w.print(",");
-			w.print(namedDataProvider.name);
-		}
-		w.println();
-
-		if (metadata != null) {
-			for (String n : metadata.keySet()) {
-				w.print("# ");
-				w.print(n);
-				w.print(" = ");
-				w.print(metadata.get(n));
-				w.println();
-			}
-		}
+	public void runCyclePostlude() {
 	}
 
-	abstract void startTimer();
-
-	public class NamedDataProvider {
-		public NamedDataProvider(String name, IDataLoggerDataProvider iDataLoggerDataProvider) {
+	public class NamedDataSupplier {
+		public NamedDataSupplier(String name, Supplier<Object> dataLoggerDataSupplier) {
 			super();
 			this.name = name;
-			this.iDataLoggerDataProvider = iDataLoggerDataProvider;
+			this.dataLoggerDataSupplier = dataLoggerDataSupplier;
 		}
 
 		String name;
-		IDataLoggerDataProvider iDataLoggerDataProvider;
+		Supplier<Object> dataLoggerDataSupplier;
 	}
 }
