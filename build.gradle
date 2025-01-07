@@ -8,9 +8,9 @@ plugins {
     // ************************************************************************
 }
 
-String JMXaddress = null // "172.22.11.2" "10.36.20.2"
 var do_spotless = false
 var useG1GC = false
+String jmxHost = null // "172.22.11.2"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -42,18 +42,21 @@ deploy {
                 // getTargetTypeClass is a shortcut to get the class type using a string
 
                 frcJava(getArtifactTypeClass('FRCJavaArtifact')) {
+                    jvmArgs.add("-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector")
+                    jvmArgs.add("-Dlog4j2.asyncLoggerRingBufferSize=256")
+                    // jvmArgs.add("-Dlog4j2.debug=true")
                     if (useG1GC) {
                         gcType = 'Other'
                         jvmArgs.add("-XX:+UseG1GC")
                         jvmArgs.add("-XX:MaxGCPauseMillis=1")
                         jvmArgs.add("-XX:GCTimeRatio=1")
                     }
-                    if (JMXaddress != null) {
+                    if (jmxHost != null) {
                         jvmArgs.add("-Dcom.sun.management.jmxremote=true")
                         jvmArgs.add("-Dcom.sun.management.jmxremote.port=1198")
                         jvmArgs.add("-Dcom.sun.management.jmxremote.authenticate=false")
                         jvmArgs.add("-Dcom.sun.management.jmxremote.ssl=false")
-                        jvmArgs.add("-Djava.rmi.server.hostname=" + jmxAddress)
+                        jvmArgs.add("-Djava.rmi.server.hostname=" + jmxHost)
                     }
                 }
 
@@ -286,5 +289,17 @@ if (do_spotless) {
             endWithNewline()
         }
     }
+}
+
+if (false) {
+    gradle.taskGraph.whenReady {taskGraph ->
+        println "Tasks"
+        taskGraph.getAllTasks().eachWithIndex{ task, n ->
+            println "${n + 1} $task"
+            task.dependsOn.eachWithIndex{ depObj, m ->
+                println "  ${ m + 1 } $depObj"
+            }
+        }
+    } 
 }
 // ****************************************************************************

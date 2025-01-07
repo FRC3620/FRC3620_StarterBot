@@ -21,8 +21,8 @@ public class EventLogging {
 
         org.apache.logging.log4j.Level log4jLevel;
 
-        FRC3620Level(org.apache.logging.log4j.Level _julLevel) {
-            log4jLevel = _julLevel;
+        FRC3620Level(org.apache.logging.log4j.Level _log4jLevel) {
+            log4jLevel = _log4jLevel;
         }
     }
 

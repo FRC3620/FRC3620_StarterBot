@@ -2,6 +2,7 @@ package org.usfirst.frc3620.misc;
 
 import org.apache.logging.log4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
 
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -9,8 +10,8 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 /** Add your docs here. */
-public class FakeMotor implements Sendable, MotorController {
-    Logger logger = EventLogging.getLogger(this.getClass());
+public class FakeMotor implements Sendable, MotorController, AutoCloseable {
+    Logger logger = EventLogging.getLogger(this.getClass(), FRC3620Level.INFO);
     int deviceId;
     double speed;
     boolean inverted;
@@ -20,6 +21,15 @@ public class FakeMotor implements Sendable, MotorController {
         speed = 0;
         inverted = false;
         SendableRegistry.addLW(this, "FakeMotor", deviceId);
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("Motor Controller");
+        builder.setActuator(true);
+        builder.setSafeState(this::stopMotor);
+        builder.addDoubleProperty("Value", this::get, this::set);
+        builder.publishConstString("id", "FakeMotor[" + deviceId + "]");
     }
 
     @Override
@@ -56,11 +66,8 @@ public class FakeMotor implements Sendable, MotorController {
     }
 
     @Override
-    public void initSendable(SendableBuilder builder) {
-        builder.setSmartDashboardType("Motor Controller");
-        builder.setActuator(true);
-        builder.setSafeState(this::stopMotor);
-        builder.addDoubleProperty("Value", this::get, this::set);
+    public void close() throws Exception {
+        SendableRegistry.remove(this);
     }
 
 }

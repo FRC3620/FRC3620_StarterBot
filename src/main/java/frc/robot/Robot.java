@@ -41,6 +41,11 @@ public class Robot extends TimedRobot {
 
     PortForwarder.add (10080, "wpilibpi.local", 80);
     PortForwarder.add (10022, "wpilibpi.local", 22);
+    
+    for (int port = 5800; port <= 5809; port++) {
+      PortForwarder.add(port, "limelight.local", port);
+    }    
+
 
     CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {//whenever a command initializes, the function declared bellow will run.
       public void accept(Command command) {
