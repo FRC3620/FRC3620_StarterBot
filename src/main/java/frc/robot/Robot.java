@@ -9,6 +9,8 @@ import org.usfirst.frc3620.misc.FileSaver;
 import org.usfirst.frc3620.misc.GitNess;
 import org.usfirst.frc3620.misc.RobotMode;
 
+import dev.doglog.DogLog;
+import dev.doglog.DogLogOptions;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -36,6 +38,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    DogLog.setOptions(new DogLogOptions().withCaptureDs(false));
+
+    DogLog.log("Version", GitNess.gitDescription());
+    
     logger = EventLogging.getLogger(Robot.class, FRC3620Level.INFO);
     logger.info ("I'm alive! {}", GitNess.gitDescription());
 
