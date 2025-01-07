@@ -1,9 +1,11 @@
-package org.usfirst.frc3620.logger;
+package org.usfirst.frc3620.logger.datalogger;
 
 import java.io.*;
 import java.util.*;
 
 import org.apache.logging.log4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.LoggingMaster;
 import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
 
 abstract public class DataLoggerBase implements IDataLogger {

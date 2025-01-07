@@ -1,18 +1,9 @@
 package frc.robot;
 
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.Logger;
-import org.reflections.Reflections;
-import org.reflections.scanners.Scanners;
-import org.reflections.util.ConfigurationBuilder;
-import org.usfirst.frc3620.logger.DataLogger;
 import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.Telemetry;
 import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
 import org.usfirst.frc3620.misc.FileSaver;
 import org.usfirst.frc3620.misc.GitNess;
@@ -74,16 +65,11 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     // get data logging going
-    DataLogger robotDataLogger = new DataLogger();
-    new RobotDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);
-    robotDataLogger.setInterval(0.25);
-    robotDataLogger.start();
+    // TODO: set up Doglog
 
     FileSaver.add("networktables.ini");
 
     enableLiveWindowInTest(true);
-
-    lookForAnnotations();
   }
 
   /**
@@ -216,18 +202,4 @@ public class Robot extends TimedRobot {
       }
     }
   }
-
-  void lookForAnnotations() {
-    Reflections reflections = new Reflections(new ConfigurationBuilder()
-    .forPackage("frc.robot")
-    .setScanners(Scanners.MethodsAnnotated));
-
-    Set<Method> types = reflections.getMethodsAnnotatedWith(Telemetry.class);
-    List<String> annotatedClasses = types.stream()
-        .map(clazz -> clazz.getAnnotation(Telemetry.class)
-            .name())
-        .collect(Collectors.toList());
-    System.out.println(annotatedClasses);
-  }
-
 }

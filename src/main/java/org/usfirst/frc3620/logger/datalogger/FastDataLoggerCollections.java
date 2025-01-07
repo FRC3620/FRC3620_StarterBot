@@ -1,4 +1,4 @@
-package org.usfirst.frc3620.logger;
+package org.usfirst.frc3620.logger.datalogger;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;

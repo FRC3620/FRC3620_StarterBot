@@ -1,7 +1,9 @@
-package org.usfirst.frc3620.logger;
+package org.usfirst.frc3620.logger.datalogger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.apache.logging.log4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.LoggingMaster;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
