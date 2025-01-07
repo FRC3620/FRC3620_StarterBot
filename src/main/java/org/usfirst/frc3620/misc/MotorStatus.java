@@ -4,8 +4,8 @@
 
 package org.usfirst.frc3620.misc;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkMax;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -70,12 +70,15 @@ public class MotorStatus {
     }
 
   public void gatherActuals(TalonFX m, String prefix) {
-    if (m != null) {
+    if (m != null && false) {
+      // TODO make this work!!!!!!!
+      /* 
       actualSensorVelocity = m.getSelectedSensorVelocity();
       actualRPM = actualSensorVelocity * 600 / 2048;
       statorCurrent = m.getStatorCurrent();
       supplyCurrent = m.getSupplyCurrent();
       appliedPower = m.getMotorOutputPercent() / 100.0;
+      */
     } else {
       actualSensorVelocity = -1;
       actualRPM = -1;
@@ -94,7 +97,7 @@ public class MotorStatus {
     SmartDashboard.putNumber(prefix + ".applied.power", appliedPower);
   }
 
-  public void gatherActuals(CANSparkMax m, String prefix) {
+  public void gatherActuals(SparkMax m, String prefix) {
     if (m != null) {
       RelativeEncoder encoder = m.getEncoder();
       actualSensorVelocity = encoder.getVelocity();

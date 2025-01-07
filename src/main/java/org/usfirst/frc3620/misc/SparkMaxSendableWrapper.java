@@ -7,7 +7,7 @@ package org.usfirst.frc3620.misc;
 import org.apache.logging.log4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -15,12 +15,12 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 /** Add your docs here. */
-public class CANSparkMaxSendableWrapper implements Sendable, MotorController{
+public class SparkMaxSendableWrapper implements Sendable, MotorController{
     Logger logger = EventLogging.getLogger(this.getClass());
-    CANSparkMax motor;
+    SparkMax motor;
     int deviceId;
 
-    public CANSparkMaxSendableWrapper(CANSparkMax motor) {
+    public SparkMaxSendableWrapper(SparkMax motor) {
         this.motor = motor;
         this.deviceId = -1;
         if (motor != null) this.deviceId = motor.getDeviceId();

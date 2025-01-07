@@ -1,12 +1,12 @@
 package org.usfirst.frc3620.misc;
 
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 
-public class CANSparkMaxSendable extends CANSparkMax implements Sendable  {
-    public CANSparkMaxSendable(int deviceId, MotorType motorType) {
+public class SparkMaxSendable extends SparkMax implements Sendable  {
+    public SparkMaxSendable(int deviceId, MotorType motorType) {
         super(deviceId, motorType);
 
         SendableRegistry.addLW(this, "SparkMax", deviceId);
