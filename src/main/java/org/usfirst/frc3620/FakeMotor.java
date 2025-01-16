@@ -1,4 +1,4 @@
-package org.usfirst.frc3620.misc;
+package org.usfirst.frc3620;
 
 import org.apache.logging.log4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;

@@ -1,16 +1,14 @@
 package frc.robot;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import org.apache.logging.log4j.Logger;
 import org.usfirst.frc3620.NTPublisher;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
-import org.usfirst.frc3620.misc.FileSaver;
-import org.usfirst.frc3620.misc.GitNess;
-import org.usfirst.frc3620.misc.RobotMode;
+import org.usfirst.frc3620.FileSaver;
+import org.usfirst.frc3620.GitNess;
+import org.usfirst.frc3620.RobotMode;
 
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
@@ -19,6 +17,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -51,6 +50,7 @@ public class Robot extends TimedRobot {
     logger.info ("I'm alive! {}", GitNess.gitDescription());
 
     addDataLogForNT("/swerve");
+    addDataLogForNT("/SmartDashboard/swerve");
     
     PortForwarder.add (10080, "wpilibpi.local", 80);
     PortForwarder.add (10022, "wpilibpi.local", 22);
@@ -182,6 +182,8 @@ public class Robot extends TimedRobot {
     NTPublisher.putString("swerve/mode", newMode.toString());
     NTPublisher.putNumber("swerve/modeInt", newMode.ordinal());
 
+    SmartDashboard.putString("swerve/mode", newMode.toString());
+    SmartDashboard.putNumber("swerve/modeInt", newMode.ordinal());
     // if any subsystems need to know about mode changes, let
     // them know here.
     // exampleSubsystem.processRobotModeChange(newMode);
@@ -222,11 +224,8 @@ public class Robot extends TimedRobot {
     }
   }
 
-  Set<NetworkTableInstance> allLoggedNT = new HashSet<>();
   public void addDataLogForNT (String prefix) {
-    NetworkTableInstance i = NetworkTableInstance.getDefault();
-    allLoggedNT.add(i);
-    int handle = i.startEntryDataLog(DataLogManager.getLog(), prefix, prefix);
+    int handle = NetworkTableInstance.getDefault().startEntryDataLog(DataLogManager.getLog(), prefix, prefix);
     logger.info ("Data log for {} = {}", prefix, handle);
   }
 }

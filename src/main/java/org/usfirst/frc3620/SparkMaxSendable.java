@@ -1,4 +1,4 @@
-package org.usfirst.frc3620.misc;
+package org.usfirst.frc3620;
 
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.util.sendable.Sendable;

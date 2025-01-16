@@ -7,16 +7,16 @@ import org.apache.logging.log4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
-import org.usfirst.frc3620.misc.CANDeviceFinder;
+import org.usfirst.frc3620.CANDeviceFinder;
+import org.usfirst.frc3620.CANDeviceType;
+import org.usfirst.frc3620.RobotParametersContainer;
+import org.usfirst.frc3620.XBoxConstants;
 
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
-import org.usfirst.frc3620.misc.CANDeviceType;
-import org.usfirst.frc3620.misc.RobotParametersContainer;
-import org.usfirst.frc3620.misc.XBoxConstants;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a

@@ -11,9 +11,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.Test;
 
-import org.usfirst.frc3620.misc.RobotParametersBase;
-import org.usfirst.frc3620.misc.RobotParametersContainer;
-import org.usfirst.frc3620.misc.Minifier;
+import org.usfirst.frc3620.RobotParametersBase;
+import org.usfirst.frc3620.RobotParametersContainer;
+import org.usfirst.frc3620.Minifier;
 
 public class RobotParametersTest {
 

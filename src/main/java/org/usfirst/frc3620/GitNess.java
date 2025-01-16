@@ -1,4 +1,4 @@
-package org.usfirst.frc3620.misc;
+package org.usfirst.frc3620;
 
 import java.io.File;
 import java.io.FileInputStream;

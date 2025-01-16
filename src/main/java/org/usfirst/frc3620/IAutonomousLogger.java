@@ -1,4 +1,4 @@
-package org.usfirst.frc3620.misc;
+package org.usfirst.frc3620;
 
 /**
  * this is used for debugging autonomous driving. Look in FRC3620_2020_GalacticSenate

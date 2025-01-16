@@ -1,4 +1,4 @@
-package org.usfirst.frc3620.misc;
+package org.usfirst.frc3620;
 
 public enum CANDeviceType {
     /* CAN bus ID for a devType|mfg|api|dev.

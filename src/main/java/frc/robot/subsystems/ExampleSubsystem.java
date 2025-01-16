@@ -4,9 +4,9 @@
 
 package frc.robot.subsystems;
 
-import org.usfirst.frc3620.misc.SparkMaxSendable;
-import org.usfirst.frc3620.misc.SparkMaxSendableWrapper;
-import org.usfirst.frc3620.misc.FakeMotor;
+import org.usfirst.frc3620.SparkMaxSendable;
+import org.usfirst.frc3620.SparkMaxSendableWrapper;
+import org.usfirst.frc3620.FakeMotor;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;

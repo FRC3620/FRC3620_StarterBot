@@ -1,4 +1,4 @@
-package org.usfirst.frc3620.misc;
+package org.usfirst.frc3620;
 
 // from https://gist.github.com/justisr/abab012af3ef399908798a687185d49a
 
