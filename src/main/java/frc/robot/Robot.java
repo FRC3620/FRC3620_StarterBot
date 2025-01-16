@@ -1,8 +1,11 @@
 package frc.robot;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import org.apache.logging.log4j.Logger;
+import org.usfirst.frc3620.NTPublisher;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
 import org.usfirst.frc3620.misc.FileSaver;
@@ -12,6 +15,8 @@ import org.usfirst.frc3620.misc.RobotMode;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -38,13 +43,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    DogLog.setOptions(new DogLogOptions().withCaptureDs(false));
-
+    // get data logging going
+    DogLog.setOptions(new DogLogOptions().withCaptureDs(false).withCaptureNt(false));
     DogLog.log("Version", GitNess.gitDescription());
-    
+
     logger = EventLogging.getLogger(Robot.class, FRC3620Level.INFO);
     logger.info ("I'm alive! {}", GitNess.gitDescription());
 
+    addDataLogForNT("/swerve");
+    
     PortForwarder.add (10080, "wpilibpi.local", 80);
     PortForwarder.add (10022, "wpilibpi.local", 22);
     
@@ -74,9 +81,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-
-    // get data logging going
-    // TODO: set up Doglog
 
     FileSaver.add("networktables.ini");
 
@@ -172,6 +176,12 @@ public class Robot extends TimedRobot {
     previousRobotMode = currentRobotMode;
     currentRobotMode = newMode;
 
+    DogLog.log("dl/mode", newMode.toString());
+    DogLog.log("dl/modeInt", newMode.ordinal());
+
+    NTPublisher.putString("swerve/mode", newMode.toString());
+    NTPublisher.putNumber("swerve/modeInt", newMode.ordinal());
+
     // if any subsystems need to know about mode changes, let
     // them know here.
     // exampleSubsystem.processRobotModeChange(newMode);
@@ -197,13 +207,11 @@ public class Robot extends TimedRobot {
     logger.info("Alliance {}, position {}", DriverStation.getAlliance(), DriverStation.getLocation());
   }
 
-  private final static long SOME_TIME_AFTER_1970 = 523980000000L;
   private boolean hasCANBusBeenLogged;
   
   void logCANBusIfNecessary() {
     if (!hasCANBusBeenLogged) {
-      long now = System.currentTimeMillis();
-      if (now > SOME_TIME_AFTER_1970) {
+      if (DriverStation.isDSAttached()) {
         logger.info ("CAN bus: " + RobotContainer.canDeviceFinder.getDeviceSet());
         var missingDevices = RobotContainer.canDeviceFinder.getMissingDeviceSet();
         if (missingDevices.size() > 0) {
@@ -212,5 +220,13 @@ public class Robot extends TimedRobot {
         hasCANBusBeenLogged = true;
       }
     }
+  }
+
+  Set<NetworkTableInstance> allLoggedNT = new HashSet<>();
+  public void addDataLogForNT (String prefix) {
+    NetworkTableInstance i = NetworkTableInstance.getDefault();
+    allLoggedNT.add(i);
+    int handle = i.startEntryDataLog(DataLogManager.getLog(), prefix, prefix);
+    logger.info ("Data log for {} = {}", prefix, handle);
   }
 }
