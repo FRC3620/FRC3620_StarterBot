@@ -9,6 +9,8 @@ import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
 
 import edu.wpi.first.hal.can.CANJNI;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 
 /**
  * Class to find out which goodies are on the CAN bus. The important guts of this
@@ -26,6 +28,8 @@ public class CANDeviceFinder {
      */
     Map<CANDeviceType, Set<Integer>> byDeviceType = new TreeMap<>();
     Set<NamedCANDevice> missingDeviceSet = new TreeSet<>();
+
+    Alert missingDevicesAlert = new Alert("Diagnostics", "", AlertType.kWarning);
 
     public CANDeviceFinder() {
         super();
@@ -70,6 +74,8 @@ public class CANDeviceFinder {
             NamedCANDevice namedCANDevice = new NamedCANDevice(deviceType, id, whatItIs);
             logger.warn("{} is missing from the CAN bus!!!", namedCANDevice);
             missingDeviceSet.add(namedCANDevice);
+            missingDevicesAlert.set(true);
+            missingDevicesAlert.setText("Missing from CAN bus: " + missingDeviceSet.toString());
         }
         return rv;
     }

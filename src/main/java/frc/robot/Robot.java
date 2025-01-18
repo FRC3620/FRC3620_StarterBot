@@ -60,21 +60,21 @@ public class Robot extends TimedRobot {
     }    
 
 
-    CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {//whenever a command initializes, the function declared bellow will run.
+    CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() { // whenever a command initializes, the function declared below will run.
       public void accept(Command command) {
-        logger.info("Initialized {}", command.getClass().getSimpleName());//I scream at people
+        logger.info("Initialized {}", command.getClass().getSimpleName());
       }
     });
 
-    CommandScheduler.getInstance().onCommandFinish(new Consumer<Command>() {//whenever a command ends, the function declared bellow will run.
+    CommandScheduler.getInstance().onCommandFinish(new Consumer<Command>() { // whenever a command ends, the function declared below will run.
       public void accept(Command command) {
-        logger.info("Ended {}", command.getClass().getSimpleName());//I, too, scream at people
+        logger.info("Ended {}", command.getClass().getSimpleName());
       }
     });
 
-    CommandScheduler.getInstance().onCommandInterrupt(new Consumer<Command>() {//whenever a command ends, the function declared bellow will run.
+    CommandScheduler.getInstance().onCommandInterrupt(new Consumer<Command>() { // whenever a command ends, the function declared below will run.
       public void accept(Command command) {
-        logger.info("Interrupted {}", command.getClass().getSimpleName());//I, in addition, as well, scream.
+        logger.info("Interrupted {}", command.getClass().getSimpleName());
       }
     });
     
@@ -85,6 +85,8 @@ public class Robot extends TimedRobot {
     FileSaver.add("networktables.ini");
 
     enableLiveWindowInTest(true);
+
+    DriverStation.silenceJoystickConnectionWarning(true);
   }
 
   /**
