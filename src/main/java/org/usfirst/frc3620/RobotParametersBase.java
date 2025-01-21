@@ -19,6 +19,7 @@ public class RobotParametersBase {
         makeAllCANDevices = false;
     }
 
+    @SuppressWarnings("unused")
     public String getMacAddress() {
         return macAddress;
     }

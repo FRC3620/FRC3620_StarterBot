@@ -34,7 +34,7 @@ public final class Minifier {
 	 * @param json string to remove the comments from
 	 * @return a minified version of the passed string, with whitespace and comments removed, null if param is null.
 	 */
-	public static final String minify(String json) {
+	public static String minify(String json) {
 		if (json == null || json.isEmpty()) return json;
 		StringBuilder sb = new StringBuilder();
 		String currentCommentIndicator = null;

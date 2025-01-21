@@ -66,7 +66,7 @@ public class FakeMotor implements Sendable, MotorController, AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         SendableRegistry.remove(this);
     }
 

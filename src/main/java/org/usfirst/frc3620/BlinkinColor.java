@@ -5,6 +5,7 @@
 package org.usfirst.frc3620;
 
 /** Add your docs here. */
+@SuppressWarnings("unused")
 public enum BlinkinColor {
   BLACK(0.99),
   DARK_GRAY(0.97),
@@ -107,9 +108,9 @@ public enum BlinkinColor {
   RAINBOW_PARTY_PALETTE(-0.97),
   RAINBOW_RAINBOW_PALETTE(-0.99);
 
-  private double value;
+  private final double value;
 
-  private BlinkinColor(double value) {
+  BlinkinColor(double value) {
     this.value = value;
   }
 

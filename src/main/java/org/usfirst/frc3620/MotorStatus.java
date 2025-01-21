@@ -11,7 +11,7 @@ import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Add your docs here. */
-@SuppressWarnings("removal")
+@SuppressWarnings("unused")
 public class MotorStatus {
 
     String name;

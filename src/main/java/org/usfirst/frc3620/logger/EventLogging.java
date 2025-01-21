@@ -8,6 +8,7 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
+@SuppressWarnings("unused")
 public class EventLogging {
 
     // make some levels that correspond to the different SLF4J logging
@@ -19,7 +20,7 @@ public class EventLogging {
         WARN(org.apache.logging.log4j.Level.WARN), //
         ERROR(org.apache.logging.log4j.Level.ERROR);
 
-        org.apache.logging.log4j.Level log4jLevel;
+        final org.apache.logging.log4j.Level log4jLevel;
 
         FRC3620Level(org.apache.logging.log4j.Level _log4jLevel) {
             log4jLevel = _log4jLevel;
@@ -27,18 +28,17 @@ public class EventLogging {
     }
 
     /**
-     * Get an log4j2 logger for a class.
+     * Get a log4j2 logger for a class.
      * 
      * @param clazz
      *            class for the logger
-     * @return
      */
     static public Logger getLogger(Class<?> clazz) {
         return getLogger(clazz.getName(), null);
     }
 
     /**
-     * Get an log4j2 logger for a class.
+     * Get a log4j2 logger for a class.
      * 
      * @param clazz
      *            class for the logger
@@ -51,7 +51,7 @@ public class EventLogging {
     }
 
     /**
-     * Get an log4j2 logger for a class.
+     * Get a log4j2 logger for a class.
      * 
      * @param sClazz
      *            name for the logger
@@ -62,7 +62,7 @@ public class EventLogging {
     }
 
     /**
-     * Get an log4j2 logger for a class.
+     * Get a log4j2 logger for a class.
      * 
      * @param sClazz
      *            name for the logger
@@ -117,7 +117,7 @@ public class EventLogging {
      * @param message
      *            Message to log.
      */
-    public static final void writeWarningToDS(String message) {
+    public static void writeWarningToDS(String message) {
         if (DriverStation.isDSAttached()) {
         	DriverStation.reportWarning(message, false);
         }
@@ -129,7 +129,7 @@ public class EventLogging {
      * @param t
      * @return
      */
-    public static final String exceptionToString(Throwable t) {
+    public static String exceptionToString(Throwable t) {
         final StackTraceElement[] stackTrace = t.getStackTrace();
         final StringBuilder message = new StringBuilder(1000);
         final String separator = "===\n";

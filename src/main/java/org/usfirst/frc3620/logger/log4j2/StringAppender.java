@@ -19,11 +19,12 @@ import java.io.*;
  *
  * @author rewolf
  */
+@SuppressWarnings("unused")
 @Plugin(name = "StringAppender", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class StringAppender extends AbstractOutputStreamAppender<StringAppender.StringOutputStreamManager> {
-    private static LoggerContext context = (LoggerContext) LogManager.getContext(false);
-    private static Configuration configuration = context.getConfiguration();
-    private StringOutputStreamManager manager;
+    private static final LoggerContext context = (LoggerContext) LogManager.getContext(false);
+    private static final Configuration configuration = context.getConfiguration();
+    private final StringOutputStreamManager manager;
 
     private StringAppender(String name, Layout<? extends Serializable> layout, StringOutputStreamManager manager, boolean ignoreExceptions, boolean immediateFlush) {
         super(name, layout, null, ignoreExceptions, immediateFlush, null, manager);
@@ -46,13 +47,7 @@ public class StringAppender extends AbstractOutputStreamAppender<StringAppender.
 
     public String getOutput() {
         manager.flush();
-        return new String(manager.getStream().toByteArray());
-    }
-
-    @Override
-    public boolean isFiltered(LogEvent event) {
-        boolean rv = super.isFiltered(event);
-        return rv;
+        return manager.getStream().toString();
     }
 
     @Override

@@ -47,7 +47,7 @@ public class FileSaver {
         public void run() {
             Date now = LoggingMaster.getTimestamp();
             if (now != null) {
-                if (path_queue.size() > 0) {
+                if (!path_queue.isEmpty()) {
                     if (prefix == null) {
                         prefix = "backup_" + LoggingMaster.convertTimestampToString(now) + "_";
                     }

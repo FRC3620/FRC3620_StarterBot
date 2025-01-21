@@ -12,7 +12,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 /** Add your docs here. */
-@SuppressWarnings("removal")
+@SuppressWarnings("unused")
 public class MotorSetup {
     public static void resetMaxToKnownState(SparkMaxSendable x, boolean inverted) {
         SparkMaxConfig config = new SparkMaxConfig();
@@ -41,8 +41,8 @@ public class MotorSetup {
         m.configPeakOutputForward(+1, kTimeoutMs);
         m.configPeakOutputReverse(-1, kTimeoutMs);
         
-        StatorCurrentLimitConfiguration amprage=new StatorCurrentLimitConfiguration(true,40,0,0); 
-        m.configStatorCurrentLimit(amprage);
+        StatorCurrentLimitConfiguration amperage=new StatorCurrentLimitConfiguration(true,40,0,0);
+        m.configStatorCurrentLimit(amperage);
         */
         config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 

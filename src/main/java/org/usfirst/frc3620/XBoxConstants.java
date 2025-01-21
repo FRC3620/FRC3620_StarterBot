@@ -1,5 +1,6 @@
 package org.usfirst.frc3620;
 
+@SuppressWarnings("unused")
 public class XBoxConstants {
 	public final static int AXIS_LEFT_X = 0;
 	public final static int AXIS_LEFT_Y = 1;

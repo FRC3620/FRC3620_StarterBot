@@ -89,7 +89,7 @@ public class RobotParametersContainer {
                     rv = c.newInstance();
                 } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
                     e.printStackTrace(System.err);
-                    logger.error("got exception {}, returning null RobotParameters", e);
+                    logger.error("got exception, returning null RobotParameters", e);
                 }
             }
         }
@@ -139,7 +139,8 @@ public class RobotParametersContainer {
                         }
                     }
                 } catch (SocketException e) {
-                    e.printStackTrace();
+                  //noinspection CallToPrintStackTrace
+                  e.printStackTrace();
                 }
             }
             roboRIOMacAddress = rv;

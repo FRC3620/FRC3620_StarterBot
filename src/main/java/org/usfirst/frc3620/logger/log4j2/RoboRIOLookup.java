@@ -9,6 +9,7 @@ import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
+@SuppressWarnings("unused")
 @Plugin(name = "roborio", category = StrLookup.CATEGORY)
 public class RoboRIOLookup implements StrLookup {
     protected final static Logger logger = StatusLogger.getLogger();

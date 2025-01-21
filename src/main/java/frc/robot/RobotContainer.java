@@ -115,15 +115,15 @@ public class RobotContainer {
 
   /**
    * Determine if this robot is a competition robot.
-   *
-   * It is if it's connected to an FMS.
-   *
-   * It is if it is missing a grounding jumper on DigitalInput 0.
-   *
-   * It is if the robot_parameters.json says so for this MAC address.
+   * <p><li>
+   * <ul>It is if it's connected to an FMS.</ul>
+   * <ul>It is if it is missing a grounding jumper on DigitalInput 0.</ul>
+   * <ul>It is if the robot_parameters.json says so for this MAC address.</ul>
+   * </li></p>
    *
    * @return true if this robot is a competition robot.
    */
+  @SuppressWarnings({"unused", "RedundantIfStatement", "PointlessBooleanExpression"})
   public static boolean amIACompBot() {
     if (DriverStation.isFMSAttached()) {
       return true;
@@ -143,20 +143,21 @@ public class RobotContainer {
   /**
    * Determine if we should make software objects, even if the device does 
    * not appear on the CAN bus.
+   * <p><li>
+   * <ul>We should if it's connected to an FMS.</ul>
+   * <ul>We should if it is missing a grounding jumper on DigitalInput 0.</ul>
+   * <ul>We should if the robot_parameters.json says so for this MAC address.</ul>
+   * </li></p>
    *
-   * We should if it's connected to an FMS.
-   *
-   * We should if it is missing a grounding jumper on DigitalInput 0.
-   *
-   * We should if the robot_parameters.json says so for this MAC address.
-   * 
    * @return true if we should make all software objects for CAN devices
    */
+  @SuppressWarnings({"unused", "RedundantIfStatement"})
   public static boolean shouldMakeAllCANDevices() {
     if (DriverStation.isFMSAttached()) {
       return true;
     }
 
+    //noinspection PointlessBooleanExpression
     if(practiceBotJumper.get() == true){
       return true;
     }

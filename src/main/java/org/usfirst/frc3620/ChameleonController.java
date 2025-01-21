@@ -5,6 +5,7 @@ import java.util.function.BooleanSupplier;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+@SuppressWarnings("unused")
 public class ChameleonController {
     public enum ControllerType { A, B }
 

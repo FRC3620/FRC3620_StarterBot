@@ -19,6 +19,7 @@ import java.util.Set;
  * The {@link NTPublisher} class is a simple way to put data into the network tables at 
  * a location other than "/SmartDashboard". It's just a copy/paste/delete-junk of SmartDashboard.
  */
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public final class NTPublisher {
   /** The {@link NetworkTable} used by {@link NTPublisher}. */
   private static NetworkTable table;

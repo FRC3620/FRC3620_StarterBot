@@ -11,6 +11,7 @@ import org.apache.logging.log4j.core.filter.AbstractFilter;
 
 import edu.wpi.first.wpilibj.RobotController;
 
+@SuppressWarnings("unused")
 @Plugin(name = "TimeIsSetFilter", category = Core.CATEGORY_NAME, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class TimeIsSetFilter extends AbstractFilter {
     private TimeIsSetFilter(Result onMatch, Result onMismatch) {
@@ -20,8 +21,7 @@ public final class TimeIsSetFilter extends AbstractFilter {
     @Override
     public Result filter(LogEvent event) {
         boolean timeIsSet = RobotController.isSystemTimeValid();
-        Result r = timeIsSet ? onMatch : onMismatch;
-        return r;
+        return timeIsSet ? onMatch : onMismatch;
     }
 
     /**

@@ -18,6 +18,7 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.util.sendable.SendableRegistry.CallbackData;
 
 /** Add your docs here. */
+@SuppressWarnings("unused")
 public class Utilities {
   static Logger logger = EventLogging.getLogger(Utilities.class, FRC3620Level.INFO);
 
@@ -25,8 +26,8 @@ public class Utilities {
    * This method makes sure the angle difference calculated falls between -180
    * degrees and 180 degrees
    * 
-   * @param angle
-   * @return
+   * @param angle angle to be normalized (degrees)
+   * @return normalized angle (-180..180)
    */
   public static double normalizeAngle(double angle) {
     angle = angle % 360;

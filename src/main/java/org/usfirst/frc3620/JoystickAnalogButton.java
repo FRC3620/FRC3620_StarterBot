@@ -5,6 +5,7 @@ import java.util.function.BooleanSupplier;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.button.*;
 
+@SuppressWarnings("unused")
 public class JoystickAnalogButton extends Trigger {
 	public JoystickAnalogButton(GenericHID joystick, int axis) {
 		this(joystick, axis, 0.1);

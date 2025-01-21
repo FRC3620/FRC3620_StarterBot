@@ -13,6 +13,7 @@ import edu.wpi.first.hal.DriverStationJNI;
 
 import java.io.Serializable;
 
+@SuppressWarnings("unused")
 @Plugin(name = "DriverStation", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class DriverStationAppender extends AbstractAppender {
     StackTraceElement[] noStackTrace = new StackTraceElement[0];

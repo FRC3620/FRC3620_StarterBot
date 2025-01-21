@@ -5,9 +5,10 @@ import java.util.function.BooleanSupplier;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.button.*;
 
+@SuppressWarnings("unused")
 public class DPad {
-	private GenericHID genericHID;
-	private int pov;
+	private final GenericHID genericHID;
+	private final int pov;
 
 	public DPad(GenericHID genericHID, int pov) {
 		super();
@@ -15,10 +16,10 @@ public class DPad {
 		this.pov = pov;
 	}
 
-	class AngleLimits {
+  static class AngleLimits {
 		private int lo, hi;
 		private boolean loNarrowed = false, hiNarrowed = false;
-		private boolean wrapped = false;
+		private final boolean wrapped;
 
 		public AngleLimits(int lo, int hi) {
 			super();
@@ -61,7 +62,7 @@ public class DPad {
 	}
 
 	class AlBooleanSupplier implements BooleanSupplier {
-		private AngleLimits angleLimits;
+		private final AngleLimits angleLimits;
 
 		AlBooleanSupplier(AngleLimits angleLimits) {
 			this.angleLimits = angleLimits;

@@ -1,7 +1,5 @@
 package frc.robot;
 
-import java.util.function.Consumer;
-
 import org.apache.logging.log4j.Logger;
 import org.usfirst.frc3620.*;
 import org.usfirst.frc3620.logger.EventLogging;
@@ -10,8 +8,6 @@ import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.net.PortForwarder;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -54,26 +50,20 @@ public class Robot extends TimedRobot {
     
     for (int port = 5800; port <= 5809; port++) {
       PortForwarder.add(port, "limelight.local", port);
-    }    
+    }
 
 
-    CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() { // whenever a command initializes, the function declared below will run.
-      public void accept(Command command) {
-        logger.info("Initialized {}", command.getClass().getSimpleName());
-      }
-    });
+    // whenever a command initializes, the function declared below will run.
+    CommandScheduler.getInstance().onCommandInitialize(command ->
+            logger.info("Initialized {}", command.getClass().getSimpleName()));
 
-    CommandScheduler.getInstance().onCommandFinish(new Consumer<Command>() { // whenever a command ends, the function declared below will run.
-      public void accept(Command command) {
-        logger.info("Ended {}", command.getClass().getSimpleName());
-      }
-    });
+    // whenever a command ends, the function declared below will run.
+    CommandScheduler.getInstance().onCommandFinish(command ->
+            logger.info("Ended {}", command.getClass().getSimpleName()));
 
-    CommandScheduler.getInstance().onCommandInterrupt(new Consumer<Command>() { // whenever a command ends, the function declared below will run.
-      public void accept(Command command) {
-        logger.info("Interrupted {}", command.getClass().getSimpleName());
-      }
-    });
+    // whenever a command ends, the function declared below will run.
+    CommandScheduler.getInstance().onCommandInterrupt(command ->
+            logger.info("Interrupted {}", command.getClass().getSimpleName()));
     
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
@@ -189,10 +179,12 @@ public class Robot extends TimedRobot {
     
   }
 
+  @SuppressWarnings("unused")
   public static RobotMode getCurrentRobotMode(){
     return currentRobotMode;
   }
 
+  @SuppressWarnings("unused")
   public static RobotMode getPreviousRobotMode(){
     return previousRobotMode;
   }
@@ -213,10 +205,10 @@ public class Robot extends TimedRobot {
   void logCANBusIfNecessary() {
     if (!hasCANBusBeenLogged) {
       if (DriverStation.isDSAttached()) {
-        logger.info ("CAN bus: " + RobotContainer.canDeviceFinder.getDeviceSet());
+        logger.info("CAN bus: {}", RobotContainer.canDeviceFinder.getDeviceSet());
         var missingDevices = RobotContainer.canDeviceFinder.getMissingDeviceSet();
-        if (missingDevices.size() > 0) {
-          logger.warn ("Missing devices: " + missingDevices);
+        if (!missingDevices.isEmpty()) {
+          logger.warn("Missing devices: {}", missingDevices);
         }
         hasCANBusBeenLogged = true;
       }

@@ -21,7 +21,7 @@ public enum CANDeviceType {
     /*
      * SRX used to be 0x02041400.
 
-    As of 2019.02.08: (SRX @ devid 1)
+    As of 2019.02.08: (SRX @ device id 1)
      7 0x007 = 020401C1
     81 0x051 = 02041441 ** using this?
     82 0x052 = 02041481
@@ -42,7 +42,7 @@ public enum CANDeviceType {
     /*
     SPX used to be 0x01041400.
 
-    As of 2019.02.08:  (SPX @ devid 2)
+    As of 2019.02.08:  (SPX @ device id 2)
      7 0x007 = 010401C2
     81 0x051 = 01041442 ** using this
     83 0x053 = 010414C2
@@ -58,7 +58,7 @@ public enum CANDeviceType {
     // per REV (x02051800)
     SPARK_MAX(0x02051800, 64);
 
-    int msgId, maxDevices;
+    final int msgId, maxDevices;
 
     CANDeviceType(int _msgId, int _maxDevices) {
         msgId = _msgId;

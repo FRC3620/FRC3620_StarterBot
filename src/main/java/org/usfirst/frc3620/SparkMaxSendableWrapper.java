@@ -15,6 +15,7 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 /** Add your docs here. */
+@SuppressWarnings("deprecation")
 public class SparkMaxSendableWrapper implements Sendable, MotorController{
     Logger logger = EventLogging.getLogger(this.getClass());
     SparkMax motor;

@@ -15,8 +15,9 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 /**
  * Class to find out which goodies are on the CAN bus. The important guts of this
  * were provided by Omar at CTRE; see
- * https://www.chiefdelphi.com/t/how-to-detect-missing-can-devices-from-java/147675/10
+ * <a href="https://www.chiefdelphi.com/t/how-to-detect-missing-can-devices-from-java/147675/10">...</a>
  */
+@SuppressWarnings("unused")
 public class CANDeviceFinder {
     static Logger logger = EventLogging.getLogger(CANDeviceFinder.class, FRC3620Level.INFO);
 
@@ -37,7 +38,7 @@ public class CANDeviceFinder {
         // research();
     }
 
-    public class NamedCANDevice implements Comparable<NamedCANDevice>{
+    public static class NamedCANDevice implements Comparable<NamedCANDevice>{
         CANDeviceId id;
         String name;
         NamedCANDevice (CANDeviceType deviceType, int i, String name) {
@@ -149,7 +150,7 @@ public class CANDeviceFinder {
         void report() {
             for (int id: idsPresent) {
                 int deviceId = extractDeviceId(id);
-                deviceSet.add(new CANDeviceId(canDeviceType, deviceId));//NOPMD
+                deviceSet.add(new CANDeviceId(canDeviceType, deviceId));
             }
         }
     }
@@ -219,7 +220,7 @@ public class CANDeviceFinder {
         try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
-            e.printStackTrace(); // NOPMD
+            e.printStackTrace();
         }
 
         for (CanFinder finder: finders) {
@@ -249,8 +250,8 @@ public class CANDeviceFinder {
     }
 
     /** helper routine to get last received message for a given ID */
-    private ByteBuffer targetID = ByteBuffer.allocateDirect(4);
-    private ByteBuffer timeStamp = ByteBuffer.allocateDirect(4);
+    private final ByteBuffer targetID = ByteBuffer.allocateDirect(4);
+    private final ByteBuffer timeStamp = ByteBuffer.allocateDirect(4);
     private long checkMessage(int id) {
         try {
             targetID.clear();
@@ -264,9 +265,9 @@ public class CANDeviceFinder {
             CANJNI.FRCNetCommCANSessionMuxReceiveMessage(
                     targetID.asIntBuffer(), 0x1fffffff, timeStamp);
 
-            long retval = timeStamp.getInt();
-            retval &= 0xFFFFFFFF; /* undo sign-extension */
-            return retval;
+            long rv = timeStamp.getInt();
+            rv &= 0xFFFFFFFFL; /* undo sign-extension */
+            return rv;
         } catch (Exception e) {
             return -1;
         }

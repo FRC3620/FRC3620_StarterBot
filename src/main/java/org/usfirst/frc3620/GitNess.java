@@ -5,14 +5,9 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.apache.logging.log4j.Logger;
-import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
-
 import edu.wpi.first.wpilibj.Filesystem;
 
 public class GitNess {
-    static Logger logger = EventLogging.getLogger(GitNess.class, FRC3620Level.INFO);
     private static Properties instance;
     public static Properties gitProperties() {
         if (instance == null) {
