@@ -31,6 +31,8 @@ public class RobotContainer {
   public static CANDeviceFinder canDeviceFinder;
   public static RobotParameters robotParameters;
 
+  Alert missingDevicesAlert = new Alert("Diagnostics", "", Alert.AlertType.kWarning);
+
   // hardware here...
   private static DigitalInput practiceBotJumper;
 
@@ -48,7 +50,7 @@ public class RobotContainer {
     canDeviceFinder = new CANDeviceFinder();
 
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
-    logger.info ("got parameters for chassis '{}'", robotParameters.getName());
+    logger.info("got parameters for chassis '{}'", robotParameters.getName());
 
     practiceBotJumper = new DigitalInput(0);
     boolean iAmACompetitionRobot = amIACompBot();
@@ -63,6 +65,11 @@ public class RobotContainer {
     }
 
     makeSubsystems();
+
+    if (!canDeviceFinder.getMissingDeviceSet().isEmpty()) {
+      missingDevicesAlert.set(true);
+      missingDevicesAlert.setText("Missing from CAN bus: " + canDeviceFinder.getMissingDeviceSet());
+    }
 
     // Configure the button bindings
     configureButtonBindings();

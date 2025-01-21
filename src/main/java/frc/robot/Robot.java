@@ -10,7 +10,6 @@ import dev.doglog.DogLogOptions;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -36,15 +35,14 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     // get data logging going
-    DogLog.setOptions(new DogLogOptions().withCaptureDs(false).withCaptureNt(false));
+    DogLog.setOptions(new DogLogOptions().withCaptureDs(true).withCaptureNt(false));
     DogLog.log("Version", GitNess.gitDescription());
 
     logger = EventLogging.getLogger(Robot.class, FRC3620Level.INFO);
     logger.info ("I'm alive! {}", GitNess.gitDescription());
 
-    Utilities.addDataLogForNT("/swerve");
-    Utilities.addDataLogForNT("/SmartDashboard/swerve");
-    
+    Utilities.addDataLogForNT("frc3620");
+
     PortForwarder.add (10080, "wpilibpi.local", 80);
     PortForwarder.add (10022, "wpilibpi.local", 22);
     
@@ -165,14 +163,9 @@ public class Robot extends TimedRobot {
     previousRobotMode = currentRobotMode;
     currentRobotMode = newMode;
 
-    DogLog.log("dl/mode", newMode.toString());
-    DogLog.log("dl/modeInt", newMode.ordinal());
+    NTPublisher.putString("frc3620/mode", newMode.toString());
+    NTPublisher.putNumber("frc3620/modeInt", newMode.ordinal());
 
-    NTPublisher.putString("swerve/mode", newMode.toString());
-    NTPublisher.putNumber("swerve/modeInt", newMode.ordinal());
-
-    SmartDashboard.putString("swerve/mode", newMode.toString());
-    SmartDashboard.putNumber("swerve/modeInt", newMode.ordinal());
     // if any subsystems need to know about mode changes, let
     // them know here.
     // exampleSubsystem.processRobotModeChange(newMode);
