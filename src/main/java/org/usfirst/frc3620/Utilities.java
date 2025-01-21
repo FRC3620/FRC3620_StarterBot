@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DataLogManager;
 import org.apache.logging.log4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
@@ -149,4 +151,17 @@ public class Utilities {
     for (double v : l) rv += v;
     return rv;
   }
+
+  public static void addDataLogForNT (String prefix) {
+    String s = "/" + removeLeadingAndTrailingSlashes(prefix);
+    int handle = NetworkTableInstance.getDefault().startEntryDataLog(DataLogManager.getLog(), s, s);
+    logger.info ("Data log for {} = {}", prefix, handle);
+  }
+
+  public static String removeLeadingAndTrailingSlashes (String s) {
+    String rv = s.replaceFirst("/+$", "");
+    rv = rv.replaceFirst("^/+", "");
+    return rv;
+  }
+
 }

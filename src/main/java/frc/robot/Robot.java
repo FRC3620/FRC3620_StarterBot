@@ -3,12 +3,9 @@ package frc.robot;
 import java.util.function.Consumer;
 
 import org.apache.logging.log4j.Logger;
-import org.usfirst.frc3620.NTPublisher;
+import org.usfirst.frc3620.*;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
-import org.usfirst.frc3620.FileSaver;
-import org.usfirst.frc3620.GitNess;
-import org.usfirst.frc3620.RobotMode;
 
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
@@ -49,8 +46,8 @@ public class Robot extends TimedRobot {
     logger = EventLogging.getLogger(Robot.class, FRC3620Level.INFO);
     logger.info ("I'm alive! {}", GitNess.gitDescription());
 
-    addDataLogForNT("/swerve");
-    addDataLogForNT("/SmartDashboard/swerve");
+    Utilities.addDataLogForNT("/swerve");
+    Utilities.addDataLogForNT("/SmartDashboard/swerve");
     
     PortForwarder.add (10080, "wpilibpi.local", 80);
     PortForwarder.add (10022, "wpilibpi.local", 22);
@@ -226,8 +223,4 @@ public class Robot extends TimedRobot {
     }
   }
 
-  public void addDataLogForNT (String prefix) {
-    int handle = NetworkTableInstance.getDefault().startEntryDataLog(DataLogManager.getLog(), prefix, prefix);
-    logger.info ("Data log for {} = {}", prefix, handle);
-  }
 }

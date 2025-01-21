@@ -4,19 +4,23 @@
 
 package frc.robot.subsystems;
 
-import org.usfirst.frc3620.SparkMaxSendable;
-import org.usfirst.frc3620.SparkMaxSendableWrapper;
-import org.usfirst.frc3620.FakeMotor;
+import org.usfirst.frc3620.*;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.usfirst.frc3620.motors.MotorWatcher;
+import org.usfirst.frc3620.motors.MotorWatcherMetric;
+
+import java.util.EnumSet;
 
 public class ExampleSubsystem extends SubsystemBase {
   FakeMotor motor;
   SparkMaxSendable max;
   SparkMax max2;
+
+  MotorWatcher watcher = new MotorWatcher("example");
   /** Creates a new ExampleSubsystem. */
   public ExampleSubsystem() {
     motor = new FakeMotor(99);
@@ -26,11 +30,18 @@ public class ExampleSubsystem extends SubsystemBase {
     addChild("max", max);
     addChild("max3", motor);
     addChild("zmax2", maxW);
+
+    Utilities.addDataLogForNT("example");
+
+    NTPublisher.putString("example/boo", "baz");
+
+    watcher.addMotor("max2", max2, EnumSet.allOf(MotorWatcherMetric.class));
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    watcher.collect(true);
   }
 
   @Override
