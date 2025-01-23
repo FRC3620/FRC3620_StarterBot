@@ -8,8 +8,11 @@ import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -36,10 +39,11 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // get data logging going
     DogLog.setOptions(new DogLogOptions().withCaptureDs(true).withCaptureNt(false));
-    DogLog.log("Version", GitNess.gitDescription());
+    DataLogManager.start();
 
     logger = EventLogging.getLogger(Robot.class, FRC3620Level.INFO);
     logger.info ("I'm alive! {}", GitNess.gitDescription());
+    Utilities.logMetadataToDataLog();
 
     Utilities.addDataLogForNT("frc3620");
 
@@ -49,7 +53,6 @@ public class Robot extends TimedRobot {
     for (int port = 5800; port <= 5809; port++) {
       PortForwarder.add(port, "limelight.local", port);
     }
-
 
     // whenever a command initializes, the function declared below will run.
     CommandScheduler.getInstance().onCommandInitialize(command ->
@@ -67,7 +70,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    FileSaver.add("networktables.ini");
+    FileSaver.add("networktables.json");
 
     enableLiveWindowInTest(true);
 
@@ -172,12 +175,10 @@ public class Robot extends TimedRobot {
     
   }
 
-  @SuppressWarnings("unused")
   public static RobotMode getCurrentRobotMode(){
     return currentRobotMode;
   }
 
-  @SuppressWarnings("unused")
   public static RobotMode getPreviousRobotMode(){
     return previousRobotMode;
   }
@@ -206,6 +207,14 @@ public class Robot extends TimedRobot {
         hasCANBusBeenLogged = true;
       }
     }
+  }
+
+  public void testAddDataLogForNT (String prefix) {
+    String s = prefix.replaceAll("^/+", "");
+    s = Utilities.removeLeadingAndTrailingSlashes(s);
+    String[] parts = s.split("/");
+    int handle = NetworkTableInstance.getDefault().startEntryDataLog(DataLogManager.getLog(), s, s);
+    logger.info ("Data log for {} = {}", prefix, handle);
   }
 
 }

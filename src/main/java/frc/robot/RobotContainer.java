@@ -10,6 +10,7 @@ import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
 import org.usfirst.frc3620.CANDeviceFinder;
 import org.usfirst.frc3620.CANDeviceType;
 import org.usfirst.frc3620.RobotParametersContainer;
+import org.usfirst.frc3620.Utilities;
 import org.usfirst.frc3620.XBoxConstants;
 
 import frc.robot.commands.ExampleCommand;
@@ -51,6 +52,7 @@ public class RobotContainer {
 
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
     logger.info("got parameters for chassis '{}'", robotParameters.getName());
+    Utilities.logMetadataToDataLog("Robot", robotParameters.getName());
 
     practiceBotJumper = new DigitalInput(0);
     boolean iAmACompetitionRobot = amIACompBot();

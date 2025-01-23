@@ -35,7 +35,7 @@ public class ExampleSubsystem extends SubsystemBase {
 
     NTPublisher.putString("example/boo", "baz");
 
-    watcher.addMotor("max2", max2, EnumSet.allOf(MotorWatcherMetric.class));
+    watcher.addMotor("motor/max2", max2, EnumSet.allOf(MotorWatcherMetric.class));
   }
 
   @Override

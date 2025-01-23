@@ -8,73 +8,97 @@ import java.util.Properties;
 import edu.wpi.first.wpilibj.Filesystem;
 
 public class GitNess {
-    private static Properties instance;
-    public static Properties gitProperties() {
-        if (instance == null) {
-            instance = new Properties();
-            File propFile = new File(Filesystem.getDeployDirectory(), "git.properties");
+  private static Properties instance;
 
-            // .close of resourceStream automagically happens
-            try (InputStream resourceStream = new FileInputStream(propFile)) {
-                instance.load(resourceStream);
-            } catch (Exception ex) {
-                instance.setProperty("oopsie", ex.toString());
-            }
-        }
-        return instance;
+  static {
+    instance = new Properties();
+    File propFile = new File(Filesystem.getDeployDirectory(), "git.properties");
+
+    // .close of resourceStream automagically happens
+    try (InputStream resourceStream = new FileInputStream(propFile)) {
+      instance.load(resourceStream);
+    } catch (Exception ex) {
+      instance.setProperty("oopsie", ex.toString());
+    }
+  }
+
+  public static Properties gitProperties() {
+    return instance;
+  }
+
+  public static String getBranch(String defaultValue) {
+    return instance.getProperty("git.branch", defaultValue);
+  }
+
+  public static String getBuildTime() {
+    return instance.getProperty("build.time");
+  }
+
+  public static String getBuildHost() {
+    return instance.getProperty("git.build.host");
+  }
+
+  public static String getCommitId() {
+    return instance.getProperty("git.commit.id");
+  }
+
+  public static String getCommitDate() {
+    return instance.getProperty("git.commit.time");
+  }
+
+  public static String getDescription(String defaultValue) {
+    return instance.getProperty("git.commit.id.describe", defaultValue);
+  }
+
+  public static Boolean getDirty() {
+    String s = instance.getProperty("git.dirty");
+    if (s == null)
+      return null;
+    return Boolean.parseBoolean(s);
+  }
+
+  public static String getProject(String defaultValue) {
+    return instance.getProperty("project.dir", defaultValue);
+  }
+
+  public static String gitDescription() {
+    StringBuilder sb = new StringBuilder();
+    String s;
+    
+    sb.append(getProject("unknown-project"));
+    sb.append(" ");
+
+    sb.append(getDescription("unknown"));
+
+    Boolean dirty = getDirty();
+    if (dirty == null) {
+        sb.append("-unknownDirtyness");
+    } else {
+        sb.append (dirty ? "-dirty" : "");
     }
 
-    public static String gitDescription() {
-        Properties p = gitProperties();
-        StringBuilder sb = new StringBuilder();
-        String d;
-        
-        d = p.getProperty("project.dir");
-        if (d == null) {
-            d = "unknown-project";
-        }
-        sb.append(d);
-        sb.append(" ");
+    sb.append(" Branch=");
+    sb.append(getBranch("(null)"));
 
-        d = p.getProperty("git.commit.id.describe");
-        if (d == null) {
-            d = "unknown";
-        }
-        sb.append(d);
-
-        d = p.getProperty("git.dirty");
-        if (d == null) {
-            d = "-unknownDirtyness";
-        } else {
-            d = Boolean.parseBoolean(d) ? "-dirty" : "";
-        }
-        sb.append(d);
-
-        d = p.getProperty("git.branch");
-        if (d == null) {
-            d = " Branch=(null)";
-        } else {
-            d = " Branch=" + d;
-        }
-        sb.append(d);
-
-        d = p.getProperty("build.time");
-        if (d != null) {
-            d = " Build-time=\"" + d + "\"";
-        }
-        sb.append(d);
-
-        d = p.getProperty("git.build.host");
-        if (d != null) {
-            d = " Build-host=" + d;
-        }
-        sb.append(d);
-
-        return sb.toString();
+    s = getBuildTime();
+    if (s != null) {
+        sb.append(" Build-time=\"");
+        sb.append(s);
+        sb.append( "\"");
     }
 
-    public static String gitString() {
-        return gitProperties().toString();
+    s = getBuildHost();
+    if (s != null) {
+        sb.append(" Build-host=\"");
+        sb.append(s);
+        sb.append( "\"");
     }
+
+    return sb.toString();
+  }
+
+  public static String gitString() {
+    return gitProperties().toString();
+  }
 
 }
