@@ -42,9 +42,6 @@ deploy {
                 // getTargetTypeClass is a shortcut to get the class type using a string
 
                 frcJava(getArtifactTypeClass('FRCJavaArtifact')) {
-                    jvmArgs.add("-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector")
-                    jvmArgs.add("-Dlog4j2.asyncLoggerRingBufferSize=256")
-                    // jvmArgs.add("-Dlog4j2.debug=true")
                     if (useG1GC) {
                         gcType = 'Other'
                         jvmArgs.add("-XX:+UseG1GC")
@@ -87,20 +84,8 @@ dependencies {
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
 
-    // so we can scan for annotations
-    implementation group: 'org.reflections', name: 'reflections', version: '0.10.2'
-
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    //implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.10'
-    //implementation group: 'org.slf4j', name: 'jul-to-slf4j', version: '2.0.10' // JUL bridge
-
-    annotationProcessor("org.apache.logging.log4j:log4j-core:2.22.1")
-    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.22.1'
-    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.22.1'
-    //implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j2-impl', version: '2.22.1'
-
-    // https://mvnrepository.com/artifact/com.lmax/disruptor
-    implementation group: 'com.lmax', name: 'disruptor', version: '3.4.3'
+    implementation 'org.tinylog:tinylog-api:2.7.0' // Replace with the latest version
+    implementation 'org.tinylog:tinylog-impl:2.7.0' // Replace with the latest version
 
     roborioDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.roborio)
     roborioDebug wpi.java.vendor.jniDebug(wpi.platforms.roborio)
@@ -131,13 +116,6 @@ test {
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
 
     // FRC3620 ********************************************************************
-    // log4j2 debugging
-    //systemProperty 'log4j2.debug', 'true'
-    systemProperty 'AsyncLogger.RingBufferSize', '512'
-    systemProperty 'log4j2.is.webapp', 'false'
-    systemProperty 'log4j2.enable.threadlocals', 'true'
-    systemProperty 'log4j2.contextSelector', 'org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector'
-
     if (useG1GC) {
         jvmArgs "-XX:+UseG1GC"
         jvmArgs "-XX:MaxGCPauseMillis=1"
@@ -165,15 +143,6 @@ jar {
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     from sourceSets.main.allSource
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
-    // FRC3620 ****************************************************************
-    // this is so log4j2 can scan classes for plugins
-    manifest {
-        attributes(
-                "Manifest-Version": "1.0",
-                "Multi-Release": true
-                )
-    }
-    // ************************************************************************
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
@@ -209,7 +178,7 @@ def getBuildTime(df) {
 }
 
 gitProperties {
-    dateFormat = "yyyy-MM-dd'T'HH:mmZ (EEE)"
+    dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ (EEE)"
     // Customize directory using gitPropertiesResourceDir config
     // The directory in this config key is also added as a classpath entry
     // (so the git.properties file will be included in the final JAR file)

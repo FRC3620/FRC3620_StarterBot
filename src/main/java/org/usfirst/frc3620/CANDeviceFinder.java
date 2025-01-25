@@ -4,9 +4,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.*;
 
-import org.apache.logging.log4j.Logger;
-import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
+import org.usfirst.frc3620.logger.LoggingMaster;
 
 import edu.wpi.first.hal.can.CANJNI;
 
@@ -17,7 +17,7 @@ import edu.wpi.first.hal.can.CANJNI;
  */
 @SuppressWarnings("unused")
 public class CANDeviceFinder {
-    static Logger logger = EventLogging.getLogger(CANDeviceFinder.class, FRC3620Level.INFO);
+    static TaggedLogger logger = LoggingMaster.tinylogLogger(CANDeviceFinder.class);
 
     Set<CANDeviceId> deviceSet = new TreeSet<>();
 

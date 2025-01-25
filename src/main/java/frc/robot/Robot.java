@@ -1,18 +1,17 @@
 package frc.robot;
 
-import org.apache.logging.log4j.Logger;
+import org.tinylog.TaggedLogger;
+
 import org.usfirst.frc3620.*;
-import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
+import org.usfirst.frc3620.logger.LoggingMaster;
 
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
+
 import edu.wpi.first.net.PortForwarder;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -27,7 +26,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private Logger logger;
+  private TaggedLogger logger;
 
   static private RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
 
@@ -41,7 +40,7 @@ public class Robot extends TimedRobot {
     DogLog.setOptions(new DogLogOptions().withCaptureDs(true).withCaptureNt(false));
     DataLogManager.start();
 
-    logger = EventLogging.getLogger(Robot.class, FRC3620Level.INFO);
+    logger = LoggingMaster.tinylogLogger(getClass());
     logger.info ("I'm alive! {}", GitNess.gitDescription());
     Utilities.logMetadataToDataLog();
 
@@ -207,14 +206,6 @@ public class Robot extends TimedRobot {
         hasCANBusBeenLogged = true;
       }
     }
-  }
-
-  public void testAddDataLogForNT (String prefix) {
-    String s = prefix.replaceAll("^/+", "");
-    s = Utilities.removeLeadingAndTrailingSlashes(s);
-    String[] parts = s.split("/");
-    int handle = NetworkTableInstance.getDefault().startEntryDataLog(DataLogManager.getLog(), s, s);
-    logger.info ("Data log for {} = {}", prefix, handle);
   }
 
 }

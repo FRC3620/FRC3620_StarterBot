@@ -8,15 +8,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.tinylog.TaggedLogger;
+import org.usfirst.frc3620.logger.LoggingMaster;
+
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.RuntimeType;
-
-import org.apache.logging.log4j.Logger;
-import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
 
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.StringLogEntry;
@@ -26,7 +25,7 @@ import edu.wpi.first.util.sendable.SendableRegistry.CallbackData;
 /** Add your docs here. */
 @SuppressWarnings("unused")
 public class Utilities {
-  static Logger logger = EventLogging.getLogger(Utilities.class, FRC3620Level.INFO);
+  static TaggedLogger logger = LoggingMaster.tinylogLogger(Utilities.class);
 
   /**
    * This method makes sure the angle difference calculated falls between -180

@@ -1,8 +1,7 @@
 package org.usfirst.frc3620;
 
-import org.apache.logging.log4j.Logger;
-import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
+import org.tinylog.TaggedLogger;
+import org.usfirst.frc3620.logger.LoggingMaster;
 
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -11,7 +10,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 /** Add your docs here. */
 public class FakeMotor implements Sendable, MotorController, AutoCloseable {
-    Logger logger = EventLogging.getLogger(this.getClass(), FRC3620Level.INFO);
+    TaggedLogger logger = LoggingMaster.tinylogLogger(getClass());
     int deviceId;
     double speed;
     boolean inverted;

@@ -2,15 +2,15 @@ import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 
 import org.junit.Test;
-import org.apache.logging.log4j.Logger;
-import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
+
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
 
 public class LoggingTest {
     @Test
     public void test() {
         printMemoryStatus("start");
-        Logger logger = EventLogging.getLogger(LoggingTest.class, FRC3620Level.INFO);
+        TaggedLogger logger = Logger.tag("LoggingTest");
         printMemoryStatus("after getLogger");
         System.out.println ("debug enabled = " + logger.isDebugEnabled());
         logger.error("error");

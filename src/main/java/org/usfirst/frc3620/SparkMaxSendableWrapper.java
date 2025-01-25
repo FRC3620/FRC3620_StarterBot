@@ -4,8 +4,8 @@
 
 package org.usfirst.frc3620;
 
-import org.apache.logging.log4j.Logger;
-import org.usfirst.frc3620.logger.EventLogging;
+import org.tinylog.TaggedLogger;
+import org.usfirst.frc3620.logger.LoggingMaster;
 
 import com.revrobotics.spark.SparkMax;
 
@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 /** Add your docs here. */
 @SuppressWarnings("deprecation")
 public class SparkMaxSendableWrapper implements Sendable, MotorController{
-    Logger logger = EventLogging.getLogger(this.getClass());
+    TaggedLogger logger = LoggingMaster.tinylogLogger(getClass());
     SparkMax motor;
     int deviceId;
 
