@@ -193,24 +193,27 @@ tasks.withType(JavaCompile) {
 task printGitProperties {
     dependsOn generateGitProperties
     doLast {
-        println "Project: " + project.ext.gitProps["project.dir"]
-        println "Branch: " + project.ext.gitProps["git.branch"]
-        println "Describe: " + project.ext.gitProps["git.commit.id.describe"]
-        println "Dirty: "  + project.ext.gitProps["git.dirty"]
+        println "Project:    " + project.ext.gitProps["project.dir"]
+        println "Branch:     " + project.ext.gitProps["git.branch"]
+        println "Describe:   " + project.ext.gitProps["git.commit.id.describe"]
+        println "Dirty:      " + project.ext.gitProps["git.dirty"]
+        println "Git time:   " + project.ext.gitProps["git.commit.time"]
         println "Build time: " + project.ext.gitProps["build.time"]
         println "Build host: " + project.ext.gitProps["git.build.host"]
     }
 }
 
-def getBuildTime() {
-    return new Date().toString();
+def getBuildTime(df) {
+    def sdf = new java.text.SimpleDateFormat(df)
+    return sdf.format(new Date())
 }
 
 gitProperties {
+    dateFormat = "yyyy-MM-dd'T'HH:mmZ (EEE)"
     // Customize directory using gitPropertiesResourceDir config
     // The directory in this config key is also added as a classpath entry
     // (so the git.properties file will be included in the final JAR file)
-    customProperty "build.time", { getBuildTime() }
+    customProperty "build.time", { getBuildTime(dateFormat) }
     customProperty "project.dir", { project.projectDir.getName() }
     customProperty 'git.commit.id.describe', { it.describe(tags: true, always: true) }
     gitPropertiesResourceDir = file("${project.rootDir}/src/main/deploy")
