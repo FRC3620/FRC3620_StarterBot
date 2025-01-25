@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.apache.logging.log4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
 import org.usfirst.frc3620.CANDeviceFinder;
 import org.usfirst.frc3620.CANDeviceType;
@@ -95,8 +94,7 @@ public class RobotContainer {
     driverJoystick = new Joystick(0);
     operatorJoystick = new Joystick(1);
 
-    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
-      .onTrue(new LogCommand("'A' button hit"));
+    // new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A).onTrue(new LogCommand("'A' button hit"));
 
   }
 

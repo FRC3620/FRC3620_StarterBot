@@ -42,9 +42,6 @@ deploy {
                 // getTargetTypeClass is a shortcut to get the class type using a string
 
                 frcJava(getArtifactTypeClass('FRCJavaArtifact')) {
-                    jvmArgs.add("-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector")
-                    jvmArgs.add("-Dlog4j2.asyncLoggerRingBufferSize=256")
-                    // jvmArgs.add("-Dlog4j2.debug=true")
                     if (useG1GC) {
                         gcType = 'Other'
                         jvmArgs.add("-XX:+UseG1GC")
@@ -87,9 +84,6 @@ dependencies {
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
 
-    // so we can scan for annotations
-    implementation group: 'org.reflections', name: 'reflections', version: '0.10.2'
-
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     //implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.10'
     //implementation group: 'org.slf4j', name: 'jul-to-slf4j', version: '2.0.10' // JUL bridge
@@ -98,9 +92,6 @@ dependencies {
     implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.22.1'
     implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.22.1'
     //implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j2-impl', version: '2.22.1'
-
-    // https://mvnrepository.com/artifact/com.lmax/disruptor
-    implementation group: 'com.lmax', name: 'disruptor', version: '3.4.3'
 
     roborioDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.roborio)
     roborioDebug wpi.java.vendor.jniDebug(wpi.platforms.roborio)

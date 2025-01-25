@@ -1,6 +1,5 @@
 package frc.robot;
 
-import org.apache.logging.log4j.Logger;
 import org.usfirst.frc3620.*;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
@@ -27,7 +26,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private Logger logger;
+  //private Logger logger;
 
   static private RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
 
@@ -41,8 +40,8 @@ public class Robot extends TimedRobot {
     DogLog.setOptions(new DogLogOptions().withCaptureDs(true).withCaptureNt(false));
     DataLogManager.start();
 
-    logger = EventLogging.getLogger(Robot.class, FRC3620Level.INFO);
-    logger.info ("I'm alive! {}", GitNess.gitDescription());
+    //logger = EventLogging.getLogger(Robot.class, FRC3620Level.INFO);
+    //logger.info ("I'm alive! {}", GitNess.gitDescription());
     Utilities.logMetadataToDataLog();
 
     Utilities.addDataLogForNT("frc3620");
@@ -54,6 +53,7 @@ public class Robot extends TimedRobot {
       PortForwarder.add(port, "limelight.local", port);
     }
 
+    /*
     // whenever a command initializes, the function declared below will run.
     CommandScheduler.getInstance().onCommandInitialize(command ->
             logger.info("Initialized {}", command.getClass().getSimpleName()));
@@ -65,6 +65,7 @@ public class Robot extends TimedRobot {
     // whenever a command ends, the function declared below will run.
     CommandScheduler.getInstance().onCommandInterrupt(command ->
             logger.info("Interrupted {}", command.getClass().getSimpleName()));
+    */
     
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
@@ -161,7 +162,7 @@ public class Robot extends TimedRobot {
   * this routine gets called whenever we change modes
   */
   void processRobotModeChange(RobotMode newMode) {
-    logger.info("Switching from {} to {}", currentRobotMode, newMode);
+    //logger.info("Switching from {} to {}", currentRobotMode, newMode);
     
     previousRobotMode = currentRobotMode;
     currentRobotMode = newMode;
@@ -184,6 +185,7 @@ public class Robot extends TimedRobot {
   }
 
   void logMatchInfo() {
+    /*
     if (DriverStation.isFMSAttached()) {
       logger.info("FMS attached. Event name {}, match type {}, match number {}, replay number {}", 
         DriverStation.getEventName(),
@@ -192,6 +194,7 @@ public class Robot extends TimedRobot {
         DriverStation.getReplayNumber());
     }
     logger.info("Alliance {}, position {}", DriverStation.getAlliance(), DriverStation.getLocation());
+    */
   }
 
   private boolean hasCANBusBeenLogged;
@@ -199,10 +202,10 @@ public class Robot extends TimedRobot {
   void logCANBusIfNecessary() {
     if (!hasCANBusBeenLogged) {
       if (DriverStation.isDSAttached()) {
-        logger.info("CAN bus: {}", RobotContainer.canDeviceFinder.getDeviceSet());
+        //logger.info("CAN bus: {}", RobotContainer.canDeviceFinder.getDeviceSet());
         var missingDevices = RobotContainer.canDeviceFinder.getMissingDeviceSet();
         if (!missingDevices.isEmpty()) {
-          logger.warn("Missing devices: {}", missingDevices);
+          //logger.warn("Missing devices: {}", missingDevices);
         }
         hasCANBusBeenLogged = true;
       }
@@ -214,7 +217,7 @@ public class Robot extends TimedRobot {
     s = Utilities.removeLeadingAndTrailingSlashes(s);
     String[] parts = s.split("/");
     int handle = NetworkTableInstance.getDefault().startEntryDataLog(DataLogManager.getLog(), s, s);
-    logger.info ("Data log for {} = {}", prefix, handle);
+    //logger.info ("Data log for {} = {}", prefix, handle);
   }
 
 }
