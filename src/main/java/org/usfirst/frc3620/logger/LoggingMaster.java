@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.RobotBase;
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotController;
 
 public class LoggingMaster {
@@ -20,13 +19,7 @@ public class LoggingMaster {
     TimeZone.setDefault(TimeZone.getTimeZone("America/Detroit"));
     if (RobotBase.isReal()) {
       if (_logDirectory == null)
-        _logDirectory = searchForLogDirectory(new File("/u"));
-      if (_logDirectory == null)
-        _logDirectory = searchForLogDirectory(new File("/v"));
-      if (_logDirectory == null)
-        _logDirectory = searchForLogDirectory(new File("/x"));
-      if (_logDirectory == null)
-        _logDirectory = searchForLogDirectory(new File("/y"));
+        _logDirectory = searchForLogDirectory(new File("/u/logs"));
       if (_logDirectory == null) {
         _logDirectory = new File("/home/lvuser/logs");
       }
@@ -36,8 +29,8 @@ public class LoggingMaster {
     if (!_logDirectory.exists()) {
       _logDirectory.mkdir();
     }
-    String logMessage = String.format("Log directory is %s\n",
-            _logDirectory);
+    String logMessage = String.format("[LoggingMaster] Log directory is %s\n",
+            _logDirectory.getAbsolutePath());
     System.out.print(logMessage); // NOPMD
   }
 
@@ -50,7 +43,7 @@ public class LoggingMaster {
           if (RobotController.isSystemTimeValid()) {
             _timestamp = new Date();
             String logMessage = String.format(
-                "timestamp for logs is %s\n", convertTimestampToString(_timestamp));
+                "[LoggingMaster] timestamp for logs is %s\n", convertTimestampToString(_timestamp));
             System.out.println(logMessage);
           }
         }
@@ -83,12 +76,12 @@ public class LoggingMaster {
     return _logDirectory;
   }
 
-  public static TaggedLogger tinylogLogger(Class<?> clazz) {
+  public static TaggedLogger getLogger(Class<?> clazz) {
     String s = shortenClassName(clazz.getName());
     return Logger.tag(s);
   }
 
-  public static TaggedLogger tinylogLogger(String loggerName) {
+  public static TaggedLogger getLogger(String loggerName) {
     return Logger.tag(loggerName);
   }
 

@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 @SuppressWarnings("unused")
 public class LogCommand extends InstantCommand {
-  static TaggedLogger defaultLogger = LoggingMaster.tinylogLogger(LogCommand.class);
+  static TaggedLogger defaultLogger = LoggingMaster.getLogger(LogCommand.class);
 
   private final TaggedLogger logger;
 

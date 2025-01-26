@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class FileSaver {
-    public final static TaggedLogger logger = LoggingMaster.tinylogLogger(FileSaver.class);
+    public final static TaggedLogger logger = LoggingMaster.getLogger(FileSaver.class);
 
     Queue<Path> path_queue = new ConcurrentLinkedQueue<>();
     Set<Path> completed_paths = new HashSet<>();

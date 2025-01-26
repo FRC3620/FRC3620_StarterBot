@@ -25,7 +25,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class RobotParametersContainer {
-    public final static TaggedLogger logger = LoggingMaster.tinylogLogger(RobotParametersBase.class);
+    public final static TaggedLogger logger = LoggingMaster.getLogger(RobotParametersBase.class);
 
     static ObjectMapper objectMapper = new ObjectMapper();
 
