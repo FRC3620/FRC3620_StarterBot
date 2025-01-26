@@ -37,14 +37,14 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     // get data logging going
-    DogLog.setOptions(new DogLogOptions().withCaptureDs(true).withCaptureNt(false));
-    DataLogManager.start();
+    // DogLog.setOptions(new DogLogOptions().withCaptureDs(true).withCaptureNt(false));
+    // DataLogManager.start();
 
     logger = LoggingMaster.tinylogLogger(getClass());
     logger.info ("I'm alive! {}", GitNess.gitDescription());
-    Utilities.logMetadataToDataLog();
+    // Utilities.logMetadataToDataLog();
 
-    Utilities.addDataLogForNT("frc3620");
+    // Utilities.addDataLogForNT("frc3620");
 
     PortForwarder.add (10080, "wpilibpi.local", 80);
     PortForwarder.add (10022, "wpilibpi.local", 22);
