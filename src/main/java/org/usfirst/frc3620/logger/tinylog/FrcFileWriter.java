@@ -64,7 +64,7 @@ public final class FrcFileWriter extends AbstractFormatPatternWriter {
       Date timestamp = LoggingMaster.getTimestamp();
       if (timestamp != null) {
         File logdir = LoggingMaster.getLoggingDirectory();
-        if (logdir != null) {
+        if (logdir != null && logdir.getPath().length() > 0) {
           File f = new File(logdir, LoggingMaster.convertTimestampToString(timestamp) + ".log");
           String fileName = f.getAbsolutePath();
           boolean append = getBooleanValue("append");

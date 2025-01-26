@@ -84,7 +84,7 @@ public class RobotContainer {
   }
 
   private void makeSubsystems() {
-    exampleSubsystem = new ExampleSubsystem();
+    // exampleSubsystem = new ExampleSubsystem();
   }
 
   /**
@@ -110,7 +110,9 @@ public class RobotContainer {
   public void setupAutonomousCommands() {
     SmartDashboard.putData("Auto mode", chooser);
 
-    chooser.addOption("Example Command", new ExampleCommand(exampleSubsystem));
+    if (exampleSubsystem != null) {
+      chooser.addOption("Example Command", new ExampleCommand(exampleSubsystem));
+    }
   }
 
   /**

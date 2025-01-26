@@ -1,1 +1,2 @@
 org.usfirst.frc3620.logger.tinylog.FrcFileWriter
+org.tinylog.writers.ConsoleWriter
