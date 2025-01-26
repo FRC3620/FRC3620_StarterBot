@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 /** Add your docs here. */
 public class FakeMotor implements Sendable, MotorController, AutoCloseable {
-    TaggedLogger logger = LoggingMaster.tinylogLogger(getClass());
+    TaggedLogger logger = LoggingMaster.getLogger(getClass());
     int deviceId;
     double speed;
     boolean inverted;

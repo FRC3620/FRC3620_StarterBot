@@ -25,7 +25,7 @@ import edu.wpi.first.util.sendable.SendableRegistry.CallbackData;
 /** Add your docs here. */
 @SuppressWarnings("unused")
 public class Utilities {
-  static TaggedLogger logger = LoggingMaster.tinylogLogger(Utilities.class);
+  static TaggedLogger logger = LoggingMaster.getLogger(Utilities.class);
 
   /**
    * This method makes sure the angle difference calculated falls between -180

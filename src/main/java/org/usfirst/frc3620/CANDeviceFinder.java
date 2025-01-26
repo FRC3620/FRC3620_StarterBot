@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.*;
 
-import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
@@ -17,7 +16,7 @@ import edu.wpi.first.hal.can.CANJNI;
  */
 @SuppressWarnings("unused")
 public class CANDeviceFinder {
-    static TaggedLogger logger = LoggingMaster.tinylogLogger(CANDeviceFinder.class);
+    static TaggedLogger logger = LoggingMaster.getLogger(CANDeviceFinder.class);
 
     Set<CANDeviceId> deviceSet = new TreeSet<>();
 

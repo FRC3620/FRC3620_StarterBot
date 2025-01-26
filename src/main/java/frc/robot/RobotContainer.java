@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  public final static TaggedLogger logger = LoggingMaster.tinylogLogger(RobotContainer.class);
+  public final static TaggedLogger logger = LoggingMaster.getLogger(RobotContainer.class);
   
   // need this
   public static CANDeviceFinder canDeviceFinder;
@@ -84,7 +84,7 @@ public class RobotContainer {
   }
 
   private void makeSubsystems() {
-    // exampleSubsystem = new ExampleSubsystem();
+    exampleSubsystem = new ExampleSubsystem();
   }
 
   /**
