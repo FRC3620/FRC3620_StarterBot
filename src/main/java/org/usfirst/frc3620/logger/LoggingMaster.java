@@ -58,10 +58,12 @@ public class LoggingMaster {
       return null;
 
     File logDirectory = new File(root, "logs");
-    if (!logDirectory.isDirectory())
-      return null;
-    if (!logDirectory.canWrite())
-      return null;
+    if (logDirectory.exists()) {
+      if (!logDirectory.isDirectory())
+        return null;
+      if (!logDirectory.canWrite())
+        return null;
+    }
 
     return logDirectory;
   }
