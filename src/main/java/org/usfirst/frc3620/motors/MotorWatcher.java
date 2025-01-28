@@ -13,7 +13,6 @@ public class MotorWatcher {
     MotorWatcherFetcher fetcher;
     EnumSet<MotorWatcherMetric> metrics;
     String name;
-    MotorWatcherValueContainer values;
   }
 
   public MotorWatcher(String name) {
@@ -22,7 +21,8 @@ public class MotorWatcher {
 
   String watcherName;
 
-  List<MotorWatcherInfo> info = new ArrayList<>();
+  List<MotorWatcherInfo> collectedInformationList = new ArrayList<>();
+  boolean collectedInformationListIsFrozen = false;
 
   public void addMotor(String name, Object o, EnumSet<MotorWatcherMetric> _metrics) {
     MotorWatcherFetcher f = null;
@@ -36,28 +36,41 @@ public class MotorWatcher {
       mwi.metrics = _metrics;
       mwi.fetcher = f;
       mwi.name = watcherName + "/" + Utilities.removeLeadingAndTrailingSlashes(name);
-      mwi.values = new MotorWatcherValueContainer();
-      info.add(mwi);
+      collectedInformationList.add(mwi);
     }
   }
 
   public void collect(boolean publish) {
-    for (var mwi : info) {
-      mwi.fetcher.collect(mwi.values, mwi.metrics);
+    if (! collectedInformationListIsFrozen) freezeCollectedInformation();
+    for (var mwi : collectedInformationList) {
+      mwi.fetcher.collect(mwi.metrics);
     }
 
     if (publish) {
-      for (var mwi : info) {
+      for (var mwi : collectedInformationList) {
         for (var metric : mwi.metrics) {
           Double value = null;
-          if (metric == MotorWatcherMetric.TEMPERATURE) {
-            value = mwi.values.getTemperature();
-          }
+          value = metric.getValue(mwi.fetcher);
           if (value != null) {
             NTPublisher.putNumber(mwi.name + "/" + metric.getName(), value);
           }
         }
       }
     }
+  }
+
+  public List<MotorWatcherInfo> getCollectedInformation() {
+    if (! collectedInformationListIsFrozen) freezeCollectedInformation();
+    return collectedInformationList;
+  }
+
+  /**
+   * turn the list of collected information into an unmodifiable list.
+   * do this just once, then we do not have the overhead of creating it 
+   * each time we want it.
+   */
+  void freezeCollectedInformation() {
+    collectedInformationList = Collections.unmodifiableList(collectedInformationList);
+    collectedInformationListIsFrozen = true;
   }
 }

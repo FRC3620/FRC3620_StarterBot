@@ -7,21 +7,21 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RobotParametersBase {
-    protected String macAddress;
+    protected String serialNumber;
     protected boolean competitionRobot;
     protected String name;
     protected boolean makeAllCANDevices;
 
     public RobotParametersBase() {
-        macAddress = "";
+        serialNumber = "";
         competitionRobot = false;
         name = "";
         makeAllCANDevices = false;
     }
 
     @SuppressWarnings("unused")
-    public String getMacAddress() {
-        return macAddress;
+    public String getSerialNumber() {
+        return serialNumber;
     }
 
     public boolean isCompetitionRobot() {
@@ -39,7 +39,7 @@ public class RobotParametersBase {
 
     @Override
     public String toString() {
-        return super.toString() + " [macAddress=" + macAddress + ", competitionRobot=" + competitionRobot + ", name="
+        return super.toString() + " [serial=" + serialNumber + ", competitionRobot=" + competitionRobot + ", name="
                 + name + ", makeAllCANDevices=" + makeAllCANDevices + "]";
     }
 }

@@ -11,7 +11,17 @@ class SparkMAXFetcher extends MotorWatcherFetcher {
   }
 
   @Override
-  public Double getTemperature() {
-    return sparkMax.getMotorTemperature();
+  Double measureTemperature() {
+    return temperature = sparkMax.getMotorTemperature();
+  }
+
+  @Override
+  Double measurePosition() {
+    return position = sparkMax.getAbsoluteEncoder().getPosition();
+  }
+
+  @Override
+  Double measureOutputCurrent() {
+    return outputCurrent = sparkMax.getOutputCurrent();
   }
 }

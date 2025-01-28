@@ -16,7 +16,7 @@ public class LoggingMaster {
   private static File _logDirectory = null;
 
   static {
-    TimeZone.setDefault(TimeZone.getTimeZone("America/Detroit"));
+    TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
     if (RobotBase.isReal()) {
       if (_logDirectory == null)
         _logDirectory = searchForLogDirectory(new File("/u"));

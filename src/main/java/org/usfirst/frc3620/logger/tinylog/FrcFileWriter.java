@@ -25,8 +25,6 @@ import org.tinylog.writers.AbstractFormatPatternWriter;
 import org.tinylog.writers.raw.ByteArrayWriter;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
-import edu.wpi.first.wpilibj.DataLogManager;
-
 /**
  * Writer for outputting log entries to a log file. Already existing files can
  * be continued and the output can be

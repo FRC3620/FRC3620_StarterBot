@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,7 +30,7 @@ public class RobotParametersContainer {
     public static <T extends RobotParametersBase> Map<String, T> makeParameterMap(List<T> l) {
         Map<String, T> rv = new HashMap<>();
         for (T c : l) {
-            rv.put(c.macAddress.toLowerCase(), c);
+            rv.put(c.serialNumber.toLowerCase(), c);
         }
         return rv;
     }
@@ -49,7 +47,11 @@ public class RobotParametersContainer {
 
     public static <T extends RobotParametersBase> T getRobotParameters (Class<T> parametersClass, String filename) {
         Path path = Paths.get(filename);
-        return getRobotParameters(parametersClass, path, identifyRoboRIO());
+        var rv = getRobotParameters(parametersClass, path, identifyRoboRIO());
+        if (rv == null) {
+            rv = getRobotParameters(parametersClass, path, "(unknown)");
+        }
+        return rv;
     }
 
     public static <T extends RobotParametersBase> T getRobotParameters (Class<T> parametersClass) {
@@ -58,7 +60,7 @@ public class RobotParametersContainer {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends RobotParametersBase> T getRobotParameters (Class<T> parametersClass, Path path, String mac) {
+    public static <T extends RobotParametersBase> T getRobotParameters (Class<T> parametersClass, Path path, String serialNumber) {
         if (! RobotParametersBase.class.isAssignableFrom(parametersClass)) {
             logger.error("getRobotParameters needs a subclass of RobotParameters, returning null");
             return null;
@@ -71,13 +73,13 @@ public class RobotParametersContainer {
             parameterMap = readConfiguration(parametersClass, path);
         } catch (IOException e) {
             logger.error ("can't read configuration at {}", path);
-            logger.error ("caused by", e);
+            logger.error ("caused by {}", e);
         }
 
         if (parameterMap != null) {
-            rv = parameterMap.get(mac.toLowerCase());
+            rv = parameterMap.get(serialNumber.toLowerCase());
             if (rv == null) {
-                logger.info ("no entry in {} for \"{}\"", path, mac);
+                logger.info ("no entry in {} for \"{}\"", path, serialNumber);
             }
         }
         if (rv == null) {
@@ -108,45 +110,17 @@ public class RobotParametersContainer {
         return (T) rv;
     }
 
-    static String roboRIOMacAddress = null;
+    static String roboRIOSerialNumber = null;
 
     public static String identifyRoboRIO() {
-        if (roboRIOMacAddress == null) {
-            String serialNumber = RobotController.getSerialNumber();
-            logger.info ("Serial number = '{}'", serialNumber);
-            String rv = "(unknown)";
-            if (Robot.isSimulation()) {
-                rv = "(simulation)";
-            } else {
-                try {
-                    for (Enumeration<NetworkInterface> e = NetworkInterface
-                            .getNetworkInterfaces(); e.hasMoreElements(); ) {
-                        NetworkInterface network = e.nextElement();
-                        byte[] mac = network.getHardwareAddress();
-                        if (mac == null) {
-                            logger.info("found network {}, no MAC", network.getName());
-                        } else {
-                            StringBuilder sb = new StringBuilder();
-                            for (int i = 0; i < mac.length; i++) {
-                                sb.append(String.format("%02X%s", mac[i],
-                                        (i < mac.length - 1) ? "-" : ""));
-                            }
-                            String macString = sb.toString();
-                            logger.info("found network {}, MAC address {}", network.getName(), macString);
-                            if (network.getName().equals("eth0")) {
-                                rv = macString;
-                                break;
-                            }
-                        }
-                    }
-                } catch (SocketException e) {
-                  //noinspection CallToPrintStackTrace
-                  e.printStackTrace();
-                }
+        if (roboRIOSerialNumber == null) {
+            roboRIOSerialNumber = "(simulation)";
+            if (Robot.isReal()) {
+                roboRIOSerialNumber = RobotController.getSerialNumber();;
             }
-            roboRIOMacAddress = rv;
+            logger.info ("Serial number = '{}'", roboRIOSerialNumber);
         }
-        return roboRIOMacAddress;
+        return roboRIOSerialNumber;
     }
 
 }
