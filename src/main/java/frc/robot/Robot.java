@@ -30,12 +30,7 @@ public class Robot extends TimedRobot {
 
   static private RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
-  @Override
-  public void robotInit() {
+  public Robot() {
     // get data logging going
     DogLog.setOptions(new DogLogOptions().withCaptureDs(true).withCaptureNt(false));
     DataLogManager.start();
