@@ -161,7 +161,6 @@ public class Utilities {
   public static void addDataLogForNT (String prefix) {
     String s = "/" + removeLeadingAndTrailingSlashes(prefix);
     int handle = NetworkTableInstance.getDefault().startEntryDataLog(DataLogManager.getLog(), s, s);
-    logger.info ("Data log for {} = {}", prefix, handle);
   }
 
   public static String removeLeadingAndTrailingSlashes (String s) {

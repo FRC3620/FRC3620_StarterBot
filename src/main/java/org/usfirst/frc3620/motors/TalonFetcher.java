@@ -11,7 +11,17 @@ class TalonFetcher extends MotorWatcherFetcher {
   }
 
   @Override
-  public Double getTemperature() {
-    return talonFX.getDeviceTemp().getValueAsDouble();
+  Double measureTemperature() {
+    return temperature = talonFX.getDeviceTemp().getValueAsDouble();
+  }
+
+  @Override
+  Double measurePosition() {
+    return position = talonFX.getPosition().getValueAsDouble();
+  }
+
+  @Override
+  Double measureOutputCurrent() {
+    return outputCurrent = talonFX.getStatorCurrent().getValueAsDouble();
   }
 }
