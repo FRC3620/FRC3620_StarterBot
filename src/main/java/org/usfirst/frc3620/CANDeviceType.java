@@ -36,8 +36,8 @@ public enum CANDeviceType {
 
     Talon FX and SRX are the same.
     */
-    TALON_PHOENIX5(0x02041441, 64),
-    TALON_PHOENIX6(0x02044855, 64),
+    TALON_PHOENIX5(0x02041440, 64),
+    TALON_PHOENIX6(0x02044840, 64),
 
     /*
     SPX used to be 0x01041400.
@@ -53,10 +53,14 @@ public enum CANDeviceType {
 
     2020.01.20 Device id is 0x0104 (https://github.com/CrossTheRoadElec/Phoenix-api/blob/master/src/main/java/com/ctre/phoenix/motorcontrol/can/VictorSPX.java)
     */
-    VICTOR_SPX(0x01041442, 64),
+    VICTOR_SPX(0x01041440, 64),
 
-    // per REV (x02051800)
-    SPARK_MAX(0x02051800, 64);
+    // REV sez x02051800
+    // sniffer sez 0x0205b800 is much more frequent
+    SPARK_MAX(0x0205b800, 64),
+    
+    // this is what the sniffer sez
+    CANCODER(0x05041400, 64);
 
     final int msgId, maxDevices;
 
