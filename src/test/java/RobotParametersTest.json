@@ -1,17 +1,19 @@
 [
   {
     "offset": 4.4,
-    "macAddress": "aa:bb:cc:dd:ee:ff",
+    "serialNumber": "aa:bb:cc:dd:ee:ff",
+    "makeAllCANDevices": true,
     "competitionRobot": true
   },
   {
     "offset": 5.5,
-    "macAddress": "00:11:22:33:44:55",
+    "serialNumber": ["00:11:22:33:44:55", "zed"],
+    "makeAllCANDevices": false,
     "competitionRobot": false
   },
   {
     "offset": 1.1,
-    "macAddress": "(simulation)",
+    "serialNumber": "(simulation)",
     "competitionRobot": false
   }
 ]

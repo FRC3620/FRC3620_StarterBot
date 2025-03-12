@@ -28,8 +28,11 @@ public class RobotParametersTest {
 
         @Override
         public String toString() {
-            return "MyConfig [" + serialNumber + "," + competitionRobot + "," + offset + "]";
-        }
+            StringBuilder sb = new StringBuilder(super.toString());
+            sb.setLength(sb.length()-1);
+            sb.append (", offset=" + offset);
+            sb.append ("]");
+            return sb.toString();        }
     }
 
     @Test
@@ -38,16 +41,16 @@ public class RobotParametersTest {
         json = Minifier.minify(json);
 
         List<TestRobotParameters> list2 = objectMapper.readValue(json, new TypeReference<List<TestRobotParameters>>() { });
-        System.out.println (list2);
+        System.out.println ("list2: " + list2);
 
         Map<String, TestRobotParameters> map2 = RobotParametersContainer.makeParameterMap(list2);
-        System.out.println (map2);
+        System.out.println ("map2: " + map2);
 
         List<RobotParametersBase> list3 = objectMapper.readValue(json, new TypeReference<List<RobotParametersBase>>() { });
-        System.out.println (list3);
+        System.out.println ("list3: " + list3);
 
         Map<String, RobotParametersBase> map3 = RobotParametersContainer.makeParameterMap(list3);
-        System.out.println (map3);
+        System.out.println ("map3: " + map3);
     }
 
     @Test

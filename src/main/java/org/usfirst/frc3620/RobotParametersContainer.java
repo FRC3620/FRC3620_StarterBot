@@ -30,7 +30,9 @@ public class RobotParametersContainer {
     public static <T extends RobotParametersBase> Map<String, T> makeParameterMap(List<T> l) {
         Map<String, T> rv = new HashMap<>();
         for (T c : l) {
-            rv.put(c.serialNumber.toLowerCase(), c);
+            for (var serialNumber : c.serialNumbers) {
+                rv.put(serialNumber.toLowerCase(), c);
+            }
         }
         return rv;
     }
