@@ -68,8 +68,7 @@ public class GitNess {
     sb.append(getProject("unknown-project"));
     sb.append(" ");
 
-    sb.append(getDescription("unknown"));
-
+    sb.append(getCommitId());
     Boolean dirty = getDirty();
     if (dirty == null) {
         sb.append("-unknownDirtyness");
