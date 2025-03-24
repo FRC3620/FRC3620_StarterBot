@@ -188,6 +188,9 @@ public class Utilities {
     if (s != null)
       logMetadataToDataLog(l, "BuildHost", s);
 
+    s = GitNess.getBuildHost();
+    if (s != null) logMetadataToDataLog(l, "BuildHost", s);
+
     s = GitNess.getBranch(null);
     if (s != null)
       logMetadataToDataLog(l, "GitBranch", s);

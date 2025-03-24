@@ -19,7 +19,7 @@ public class LoggingMaster {
     TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
     if (RobotBase.isReal()) {
       if (_logDirectory == null)
-        _logDirectory = searchForLogDirectory(new File("/u/logs"));
+        _logDirectory = searchForLogDirectory(new File("/u"));
       if (_logDirectory == null) {
         _logDirectory = new File("/home/lvuser/logs");
       }
@@ -58,17 +58,18 @@ public class LoggingMaster {
       return null;
 
     File logDirectory = new File(root, "logs");
-    if (!logDirectory.isDirectory())
-      return null;
-    if (!logDirectory.canWrite())
-      return null;
+    if (logDirectory.exists()) {
+      if (!logDirectory.isDirectory())
+        return null;
+      if (!logDirectory.canWrite())
+        return null;
+    }
 
     return logDirectory;
   }
 
   public static String convertTimestampToString(Date ts) {
-    SimpleDateFormat formatName = new SimpleDateFormat(
-        "yyyyMMdd-HHmmss");
+    SimpleDateFormat formatName = new SimpleDateFormat("yyyyMMdd-HHmmss");
     return formatName.format(ts);
   }
 
