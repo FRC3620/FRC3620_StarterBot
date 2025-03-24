@@ -15,15 +15,22 @@ package org.usfirst.frc3620.logger.tinylog;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.Charset;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 
 import org.tinylog.core.LogEntry;
+import org.tinylog.runtime.RuntimeProvider;
+import org.tinylog.runtime.Timestamp;
 import org.tinylog.writers.AbstractFormatPatternWriter;
 import org.tinylog.writers.raw.ByteArrayWriter;
 import org.usfirst.frc3620.logger.LoggingMaster;
+
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * Writer for outputting log entries to a log file. Already existing files can
@@ -34,6 +41,8 @@ public final class FrcFileWriter extends AbstractFormatPatternWriter {
 
   private Charset charset;
   private ByteArrayWriter writer;
+
+  private double fpgaOffset = 0;
 
   /**
    * @throws IOException
@@ -54,6 +63,12 @@ public final class FrcFileWriter extends AbstractFormatPatternWriter {
    */
   public FrcFileWriter(final Map<String, String> properties) throws IOException {
     super(properties);
+
+    double fpga = Timer.getFPGATimestamp();
+    Instant nowInstant = Instant.now();
+    double instant = nowInstant.getEpochSecond() + (nowInstant.getNano() / 1.E9);
+
+    fpgaOffset = fpga - instant;
   }
 
   @Override
@@ -76,6 +91,12 @@ public final class FrcFileWriter extends AbstractFormatPatternWriter {
     }
 
     if (writer != null) {
+      Instant logEntryInstant = logEntry.getTimestamp().toInstant();
+      double logEntrySeconds = logEntryInstant.getEpochSecond() + (logEntryInstant.getNano() / 1.E9);
+      double fpgaSeconds = fpgaOffset + logEntrySeconds;
+      byte[] tsb = String.format("%11.6f ", fpgaSeconds).getBytes(charset);
+      writer.write(tsb, 0, tsb.length);
+
       byte[] data = render(logEntry).getBytes(charset);
       writer.write(data, 0, data.length);
     }
