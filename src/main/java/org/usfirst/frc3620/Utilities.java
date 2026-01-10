@@ -16,8 +16,8 @@ import org.usfirst.frc3620.logger.LoggingMaster;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.units.measure.AngleUnit;
-import edu.wpi.first.units.measure.DistanceUnit;
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DataLogManager;

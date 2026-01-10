@@ -1,12 +1,27 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2026.1.1"
+    id "edu.wpi.first.GradleRIO" version "2026.1.1"    
+    // FRC3620 ****************************************************************
+    id "com.gorylenko.gradle-git-properties" version "2.4.1"
+    // later:
+    // id 'com.diffplug.spotless' version '6.12.0'
+    // ************************************************************************
 }
+
+var do_spotless = false
+var useG1GC = false
+String jmxHost = null // "172.22.11.2"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
+
+// FRC3620 ********************************************************************
+compileJava.options.encoding = 'UTF-8' 
+compileTestJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
+// ****************************************************************************
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
 
@@ -27,13 +42,26 @@ deploy {
                 // getTargetTypeClass is a shortcut to get the class type using a string
 
                 frcJava(getArtifactTypeClass('FRCJavaArtifact')) {
+                    if (useG1GC) {
+                        gcType = 'Other'
+                        jvmArgs.add("-XX:+UseG1GC")
+                        jvmArgs.add("-XX:MaxGCPauseMillis=1")
+                        jvmArgs.add("-XX:GCTimeRatio=1")
+                    }
+                    if (jmxHost != null) {
+                        jvmArgs.add("-Dcom.sun.management.jmxremote=true")
+                        jvmArgs.add("-Dcom.sun.management.jmxremote.port=1198")
+                        jvmArgs.add("-Dcom.sun.management.jmxremote.authenticate=false")
+                        jvmArgs.add("-Dcom.sun.management.jmxremote.ssl=false")
+                        jvmArgs.add("-Djava.rmi.server.hostname=" + jmxHost)
+                    }
                 }
 
                 // Static files artifact
                 frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/lvuser/deploy'
-                    deleteOldFiles = false // Change to true to delete files on roboRIO that no
+                    deleteOldFiles = true  // Change to true to delete files on roboRIO that no
                                            // longer exist in deploy directory of this project
                 }
             }
@@ -48,7 +76,7 @@ def deployArtifact = deploy.targets.roborio.artifacts.frcJava
 wpi.java.debugJni = false
 
 // Set this to true to enable desktop support.
-def includeDesktopSupport = false
+def includeDesktopSupport = true
 
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 5.
@@ -56,6 +84,9 @@ dependencies {
     annotationProcessor wpi.java.deps.wpilibAnnotations()
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
+
+    implementation 'org.tinylog:tinylog-api:2.7.0' // Replace with the latest version
+    implementation 'org.tinylog:tinylog-impl:2.7.0' // Replace with the latest version
 
     roborioDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.roborio)
     roborioDebug wpi.java.vendor.jniDebug(wpi.platforms.roborio)
@@ -72,12 +103,34 @@ dependencies {
     simulationRelease wpi.sim.enableRelease()
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    testImplementation 'junit:junit:4.13.1'
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.10.1") {
+        because 'allows JUnit 3 and JUnit 4 tests to run'
+    }
 }
 
 test {
     useJUnitPlatform()
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+
+    // FRC3620 ********************************************************************
+    if (useG1GC) {
+        jvmArgs "-XX:+UseG1GC"
+        jvmArgs "-XX:MaxGCPauseMillis=1"
+        jvmArgs "-XX:GCTimeRatio=1"
+    } else {
+        jvmArgs '-XX:+UseSerialGC'
+    }
+
+    // test wonderfulness
+    filter {
+        // https://stackoverflow.com/a/52879530/17887564
+        setFailOnNoMatchingTests(false)
+    }
+    // ****************************************************************************
 }
 
 // Simulation configuration (e.g. environment variables).
@@ -105,3 +158,123 @@ wpi.java.configureTestTasks(test)
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
+
+// FRC3620 ********************************************************************
+// git wonderfulness
+
+task printGitProperties {
+    dependsOn generateGitProperties
+    doLast {
+        println "Project:    " + project.ext.gitProps["project.dir"]
+        println "Branch:     " + project.ext.gitProps["git.branch"]
+        println "Describe:   " + project.ext.gitProps["git.commit.id.describe"]
+        println "Dirty:      " + project.ext.gitProps["git.dirty"]
+        println "Git time:   " + project.ext.gitProps["git.commit.time"]
+        println "Build time: " + project.ext.gitProps["build.time"]
+        println "Build host: " + project.ext.gitProps["git.build.host"]
+    }
+}
+
+def getBuildTime(df) {
+    def sdf = new java.text.SimpleDateFormat(df)
+    return sdf.format(new Date())
+}
+
+gitProperties {
+    dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ (EEE)"
+    // Customize directory using gitPropertiesResourceDir config
+    // The directory in this config key is also added as a classpath entry
+    // (so the git.properties file will be included in the final JAR file)
+    customProperty "build.time", { getBuildTime(dateFormat) }
+    customProperty "project.dir", { project.projectDir.getName() }
+    customProperty 'git.commit.id.describe', { it.describe(tags: true, always: true) }
+    gitPropertiesResourceDir = file("${project.rootDir}/src/main/deploy")
+    extProperty = 'gitProps'
+}
+generateGitProperties.finalizedBy printGitProperties // make sure we do things in the correct order
+generateGitProperties.outputs.upToDateWhen { false } // make sure the generateGitProperties task always executes (even when git.properties is not changed)
+
+tasks.processResources.dependsOn generateGitProperties // make sure we do things in the correct order
+// https://stackoverflow.com/a/70648216/17887564
+tasks.processResources.outputs.upToDateWhen { false }  // make sure the processResources task always runs
+
+// ****************************************************************************
+
+// FRC3620 ********************************************************************
+
+// this helps junit test results show up in output
+// look at https://stackoverflow.com/a/36130467/17887564 for some more suggestions
+tasks.withType(Test) {
+    testLogging {
+        exceptionFormat "full"
+        // events "passed", "failed" // , "started", "skipped"
+        showStandardStreams true
+        showExceptions true
+    }
+}
+
+tasks.test {
+    // only run tests if explicitly specified
+    // https://discuss.gradle.org/t/dont-run-tests-unless-test-task-specified-on-command-line/33700/4 
+    // run tests with .\gradlew test --tests <test-names>
+    enabled = gradle.startParameter.taskNames.contains("test")
+}
+
+// spotless!
+if (do_spotless) {
+    spotless {
+        java {
+            target fileTree('.') {
+                include '**/*.java'
+                exclude '**/build/**', '**/build-*/**'
+            }
+            toggleOffOn()
+            googleJavaFormat()
+            removeUnusedImports()
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+        groovyGradle {
+            target fileTree('.') {
+                include '**/*.gradle'
+                exclude '**/build/**', '**/build-*/**'
+            }
+            greclipse()
+            indentWithSpaces(4)
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+        format 'xml', {
+            target fileTree('.') {
+                include '**/*.xml'
+                exclude '**/build/**', '**/build-*/**'
+            }
+            eclipseWtp('xml')
+            trimTrailingWhitespace()
+            indentWithSpaces(2)
+            endWithNewline()
+        }
+        format 'misc', {
+            target fileTree('.') {
+                include '**/*.md', '**/.gitignore'
+                exclude '**/build/**', '**/build-*/**'
+            }
+            trimTrailingWhitespace()
+            indentWithSpaces(2)
+            endWithNewline()
+        }
+    }
+}
+
+if (false) {
+    gradle.taskGraph.whenReady {taskGraph ->
+        println "Tasks"
+        taskGraph.getAllTasks().eachWithIndex{ task, n ->
+            println "${n + 1} $task"
+            task.dependsOn.eachWithIndex{ depObj, m ->
+                println "  ${ m + 1 } $depObj"
+            }
+        }
+    } 
+}
+// ****************************************************************************
