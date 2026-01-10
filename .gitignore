@@ -185,10 +185,3 @@ compile_commands.json
 
 # Eclipse generated file for annotation processors
 .factorypath
-
-######## FRC3620 additions follow ########
-gitgraph*
-.idea/*
-simgui-ds.json
-simgui.json
-log.txt
