@@ -54,6 +54,10 @@ public class CANDeviceFinder {
                 return id.toString() + " (" + name + ")";
             }
         }
+
+        public CANDeviceId getCANDeviceId() {
+            return id;
+        }
     }
 
     public boolean isDevicePresent(CANDeviceType deviceType, int id) {
