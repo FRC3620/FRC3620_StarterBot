@@ -46,6 +46,9 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     canDeviceFinder = new CANDeviceFinder();
+    for (var d : canDeviceFinder.getDeviceSet()) {
+      logger.info ("Have device {}", d);
+    }
 
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
     logger.info("got parameters for chassis '{}'", robotParameters.getName());

@@ -59,6 +59,9 @@ public enum CANDeviceType {
     // this is what the sniffer sez
     CANCODER_PHOENIX5(0x05041400, 64),
     CANCODER_PHOENIX6(0x050446c0, 64),
+
+    PIGEON(0x150431c0, 16),
+
     ;
 
     final int msgId, maxDevices;
