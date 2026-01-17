@@ -94,8 +94,10 @@ public class RobotContainer {
     new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
       .onTrue(new LogCommand("Hello world"));
     
-  new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B)
+    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B)
       .onTrue(new LogCommand("Goodbye World"));
+	  
+	/* addedcode */
   }
 
   private void setupSmartDashboardCommands() {
