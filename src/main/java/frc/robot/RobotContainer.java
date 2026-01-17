@@ -92,8 +92,10 @@ public class RobotContainer {
     operatorJoystick = new Joystick(1);
 
     new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
-      .onTrue(new LogCommand("'A' button hit"));
-
+      .onTrue(new LogCommand("Hello world"));
+    
+  new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B)
+      .onTrue(new LogCommand("Goodbye World"));
   }
 
   private void setupSmartDashboardCommands() {
