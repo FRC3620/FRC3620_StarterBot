@@ -6,8 +6,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.LoggingMaster;
+import org.usfirst.frc3620.odo.OdoIdsLogitechDualAction;
+import org.usfirst.frc3620.odo.OdoButtonId;
+import org.usfirst.frc3620.odo.OdoController;
+import org.usfirst.frc3620.odo.OdoIdsXBox;
+import org.usfirst.frc3620.odo.OdoController.ControllerType;
 import org.usfirst.frc3620.CANDeviceFinder;
 import org.usfirst.frc3620.CANDeviceType;
+import org.usfirst.frc3620.RobotMode;
+import org.usfirst.frc3620.RobotModeChangeListener;
 import org.usfirst.frc3620.RobotParametersContainer;
 import org.usfirst.frc3620.Utilities;
 import org.usfirst.frc3620.XBoxConstants;
@@ -18,14 +25,17 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
-public class RobotContainer {
+public class RobotContainer implements RobotModeChangeListener {
   public final static TaggedLogger logger = LoggingMaster.getLogger(RobotContainer.class);
-  
+
   // need this
   public static CANDeviceFinder canDeviceFinder;
   public static RobotParameters robotParameters;
@@ -42,12 +52,15 @@ public class RobotContainer {
   // joysticks here....
   public static Joystick driverJoystick;
   public static Joystick operatorJoystick;
+  public static OdoController driverOdoController;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     canDeviceFinder = new CANDeviceFinder();
     for (var d : canDeviceFinder.getDeviceSet()) {
-      logger.info ("Have device {}", d);
+      logger.info("Have device {}", d);
     }
 
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
@@ -85,18 +98,35 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be created by
+   * Use this method to define your button->command mappings. Buttons can be
+   * created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+   * it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
     driverJoystick = new Joystick(0);
     operatorJoystick = new Joystick(1);
 
-    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
-      .onTrue(new LogCommand("'A' button hit"));
+    driverOdoController = new OdoController(driverJoystick);
+    Robot.addRobotModeChangeListener(this);
 
+    driverOdoController.button(OdoIdsLogitechDualAction.ButtonId.B1, new OdoButtonId(4))
+        .onTrue(new LogCommand("'Left' button hit"));
+
+  }
+
+  public void processRobotModeChange(RobotMode currentRobotMode, RobotMode previousRobotMode) {
+    if (currentRobotMode == RobotMode.TELEOP) {
+      String driveControllerName = driverJoystick.getName();
+      logger.info("Drive Controller Name: {}", driveControllerName);
+      if (driveControllerName.startsWith("Logitech")) {
+        driverOdoController.setCurrentControllerType(ControllerType.A);
+      } else {
+        driverOdoController.setCurrentControllerType(ControllerType.B);
+      }
+    }
   }
 
   private void setupSmartDashboardCommands() {
@@ -104,6 +134,7 @@ public class RobotContainer {
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
+
   public void setupAutonomousCommands() {
     SmartDashboard.putData("Auto mode", chooser);
   }
@@ -115,27 +146,36 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    //return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, VisionSubsystem, intakeSubsystem);
+    // return new GoldenAutoCommand(driveSubsystem, shooterSubsystem,
+    // VisionSubsystem, intakeSubsystem);
     return chooser.getSelected();
   }
 
   /**
    * Determine if this robot is a competition robot.
-   * <p><li>
-   * <ul>It is if it's connected to an FMS.</ul>
-   * <ul>It is if it is missing a grounding jumper on DigitalInput 0.</ul>
-   * <ul>It is if the robot_parameters.json says so for this MAC address.</ul>
-   * </li></p>
+   * <p>
+   * <li>
+   * <ul>
+   * It is if it's connected to an FMS.
+   * </ul>
+   * <ul>
+   * It is if it is missing a grounding jumper on DigitalInput 0.
+   * </ul>
+   * <ul>
+   * It is if the robot_parameters.json says so for this MAC address.
+   * </ul>
+   * </li>
+   * </p>
    *
    * @return true if this robot is a competition robot.
    */
-  @SuppressWarnings({"unused", "RedundantIfStatement", "PointlessBooleanExpression"})
+  @SuppressWarnings({ "unused", "RedundantIfStatement", "PointlessBooleanExpression" })
   public static boolean amIACompBot() {
     if (DriverStation.isFMSAttached()) {
       return true;
     }
 
-    if(practiceBotJumper.get() == true){
+    if (practiceBotJumper.get() == true) {
       return true;
     }
 
@@ -147,24 +187,32 @@ public class RobotContainer {
   }
 
   /**
-   * Determine if we should make software objects, even if the device does 
+   * Determine if we should make software objects, even if the device does
    * not appear on the CAN bus.
-   * <p><li>
-   * <ul>We should if it's connected to an FMS.</ul>
-   * <ul>We should if it is missing a grounding jumper on DigitalInput 0.</ul>
-   * <ul>We should if the robot_parameters.json says so for this MAC address.</ul>
-   * </li></p>
+   * <p>
+   * <li>
+   * <ul>
+   * We should if it's connected to an FMS.
+   * </ul>
+   * <ul>
+   * We should if it is missing a grounding jumper on DigitalInput 0.
+   * </ul>
+   * <ul>
+   * We should if the robot_parameters.json says so for this MAC address.
+   * </ul>
+   * </li>
+   * </p>
    *
    * @return true if we should make all software objects for CAN devices
    */
-  @SuppressWarnings({"unused", "RedundantIfStatement"})
+  @SuppressWarnings({ "unused", "RedundantIfStatement" })
   public static boolean shouldMakeAllCANDevices() {
     if (DriverStation.isFMSAttached()) {
       return true;
     }
 
-    //noinspection PointlessBooleanExpression
-    if(practiceBotJumper.get() == true){
+    // noinspection PointlessBooleanExpression
+    if (practiceBotJumper.get() == true) {
       return true;
     }
 
