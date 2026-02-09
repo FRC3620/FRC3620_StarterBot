@@ -6,23 +6,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.LoggingMaster;
-import org.usfirst.frc3620.odo.OdoIdsLogitechDualAction;
 import org.usfirst.frc3620.odo.OdoButtonId;
-import org.usfirst.frc3620.odo.OdoController;
+import org.usfirst.frc3620.odo.OdoIdsFlySky;
+import org.usfirst.frc3620.odo.OdoIdsLogitechDualAction;
 import org.usfirst.frc3620.odo.OdoIdsXBox;
-import org.usfirst.frc3620.odo.OdoController.ControllerType;
+import org.usfirst.frc3620.odo.OdoJoystick;
+import org.usfirst.frc3620.odo.OdoJoystick.JoystickType;
 import org.usfirst.frc3620.CANDeviceFinder;
 import org.usfirst.frc3620.CANDeviceType;
 import org.usfirst.frc3620.RobotMode;
 import org.usfirst.frc3620.RobotModeChangeListener;
 import org.usfirst.frc3620.RobotParametersContainer;
 import org.usfirst.frc3620.Utilities;
-import org.usfirst.frc3620.XBoxConstants;
 
 import org.tinylog.TaggedLogger;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -52,7 +51,7 @@ public class RobotContainer implements RobotModeChangeListener {
   // joysticks here....
   public static Joystick driverJoystick;
   public static Joystick operatorJoystick;
-  public static OdoController driverOdoController;
+  public static OdoJoystick driverOdoJoystick;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -109,22 +108,26 @@ public class RobotContainer implements RobotModeChangeListener {
     driverJoystick = new Joystick(0);
     operatorJoystick = new Joystick(1);
 
-    driverOdoController = new OdoController(driverJoystick);
+    driverOdoJoystick = new OdoJoystick(driverJoystick);
     Robot.addRobotModeChangeListener(this);
 
-    driverOdoController.button(OdoIdsLogitechDualAction.ButtonId.B1, new OdoButtonId(4))
-        .onTrue(new LogCommand("'Left' button hit"));
+    driverOdoJoystick.button( //
+      OdoIdsFlySky.ButtonId.SWE, OdoIdsXBox.ButtonId.LEFT_BUMPER) //
+        .onTrue(new LogCommand("Left 'bumper' hit"));
 
   }
 
   public void processRobotModeChange(RobotMode currentRobotMode, RobotMode previousRobotMode) {
     if (currentRobotMode == RobotMode.TELEOP) {
       String driveControllerName = driverJoystick.getName();
-      logger.info("Drive Controller Name: {}", driveControllerName);
-      if (driveControllerName.startsWith("Logitech")) {
-        driverOdoController.setCurrentControllerType(ControllerType.A);
+      int n_axes = driverJoystick.getAxisCount();
+      int n_buttons = driverJoystick.getButtonCount();
+      logger.info("Drive Controller '{}', {}connected, {} axes, {} buttons", driveControllerName, 
+        driverJoystick.isConnected() ? "" : "not ", n_axes, n_buttons);
+      if (driveControllerName.startsWith("Flysky")) {
+        driverOdoJoystick.setJoystickType(JoystickType.A);
       } else {
-        driverOdoController.setCurrentControllerType(ControllerType.B);
+        driverOdoJoystick.setJoystickType(JoystickType.B);
       }
     }
   }
