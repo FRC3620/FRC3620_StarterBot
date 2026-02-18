@@ -44,12 +44,14 @@ public class Robot extends TimedRobot {
     logger.info ("I'm alive! {}", GitNess.gitDescription());
     Utilities.logMetadataToDataLog();
 
-    Utilities.addDataLogForNT("frc3620");
-    Utilities.addDataLogForNT("SmartDashboard/frc3620");
+    if (! DogLog.getOptions().captureNt()) {
+      Utilities.addDataLogForNT("frc3620");
+      Utilities.addDataLogForNT("SmartDashboard/frc3620");
+    }
 
     // whenever a command initializes, the function declared below will run.
     CommandScheduler.getInstance().onCommandInitialize(command ->
-            logger.info("Initialized {}", command.getName()));
+            logger.info("Initialized {}, subsystems {}", command.getName(), command.getRequirements()));
 
     // whenever a command ends, the function declared below will run.
     CommandScheduler.getInstance().onCommandFinish(command ->
@@ -63,7 +65,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    FileSaver.add("networktables.json");
+    // FileSaver.add("networktables.json");
 
     enableLiveWindowInTest(true);
 
