@@ -6,9 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.LoggingMaster;
-import org.usfirst.frc3620.odo.OdoButtonId;
 import org.usfirst.frc3620.odo.OdoIdsFlySky;
-import org.usfirst.frc3620.odo.OdoIdsLogitechDualAction;
 import org.usfirst.frc3620.odo.OdoIdsXBox;
 import org.usfirst.frc3620.odo.OdoJoystick;
 import org.usfirst.frc3620.odo.OdoJoystick.JoystickType;
@@ -32,7 +30,7 @@ import edu.wpi.first.wpilibj2.command.Command;
  * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
-public class RobotContainer implements RobotModeChangeListener {
+public class RobotContainer {
   public final static TaggedLogger logger = LoggingMaster.getLogger(RobotContainer.class);
 
   // need this
@@ -42,16 +40,11 @@ public class RobotContainer implements RobotModeChangeListener {
   Alert missingDevicesAlert = new Alert("Diagnostics", "", Alert.AlertType.kWarning);
 
   // hardware here...
-  private static DigitalInput practiceBotJumper;
-
-  public static PneumaticsModuleType pneumaticModuleType = null;
 
   // subsystems here
 
   // joysticks here....
-  public static Joystick driverJoystick;
-  public static Joystick operatorJoystick;
-  public static OdoJoystick driverOdoJoystick;
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -66,16 +59,9 @@ public class RobotContainer implements RobotModeChangeListener {
     logger.info("got parameters for chassis '{}'", robotParameters.getName());
     Utilities.logMetadataToDataLog("Robot", robotParameters.getName());
 
-    practiceBotJumper = new DigitalInput(0);
     boolean iAmACompetitionRobot = amIACompBot();
     if (!iAmACompetitionRobot) {
       logger.warn("this is a test chassis, will try to deal with missing hardware!");
-    }
-
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.REV_PH, 1, "REV PH") || iAmACompetitionRobot) {
-      pneumaticModuleType = PneumaticsModuleType.REVPH;
-    } else if (canDeviceFinder.isDevicePresent(CANDeviceType.CTRE_PCM, 0, "CTRE PCM")) {
-      pneumaticModuleType = PneumaticsModuleType.CTREPCM;
     }
 
     makeSubsystems();
@@ -105,31 +91,6 @@ public class RobotContainer implements RobotModeChangeListener {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    driverJoystick = new Joystick(0);
-    operatorJoystick = new Joystick(1);
-
-    driverOdoJoystick = new OdoJoystick(driverJoystick);
-    Robot.addRobotModeChangeListener(this);
-
-    driverOdoJoystick.button( //
-      OdoIdsFlySky.ButtonId.SWE, OdoIdsXBox.ButtonId.LEFT_BUMPER) //
-        .onTrue(new LogCommand("Left 'bumper' hit"));
-
-  }
-
-  public void processRobotModeChange(RobotMode currentRobotMode, RobotMode previousRobotMode) {
-    if (currentRobotMode == RobotMode.TELEOP) {
-      String driveControllerName = driverJoystick.getName();
-      int n_axes = driverJoystick.getAxisCount();
-      int n_buttons = driverJoystick.getButtonCount();
-      logger.info("Drive Controller '{}', {}connected, {} axes, {} buttons", driveControllerName, 
-        driverJoystick.isConnected() ? "" : "not ", n_axes, n_buttons);
-      if (driveControllerName.startsWith("Flysky")) {
-        driverOdoJoystick.setJoystickType(JoystickType.A);
-      } else {
-        driverOdoJoystick.setJoystickType(JoystickType.B);
-      }
-    }
   }
 
   private void setupSmartDashboardCommands() {
@@ -178,10 +139,6 @@ public class RobotContainer implements RobotModeChangeListener {
       return true;
     }
 
-    if (practiceBotJumper.get() == true) {
-      return true;
-    }
-
     if (robotParameters.isCompetitionRobot()) {
       return true;
     }
@@ -210,12 +167,7 @@ public class RobotContainer implements RobotModeChangeListener {
    */
   @SuppressWarnings({ "unused", "RedundantIfStatement" })
   public static boolean shouldMakeAllCANDevices() {
-    if (DriverStation.isFMSAttached()) {
-      return true;
-    }
-
-    // noinspection PointlessBooleanExpression
-    if (practiceBotJumper.get() == true) {
+    if (amIACompBot()) {
       return true;
     }
 

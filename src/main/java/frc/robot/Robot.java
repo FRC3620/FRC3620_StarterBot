@@ -14,7 +14,7 @@ import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -37,17 +37,12 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     // get data logging going
-    DogLog.setOptions(new DogLogOptions().withCaptureDs(true).withCaptureNt(false));
+    DogLog.setOptions(new DogLogOptions().withNtPublish(true));
     DataLogManager.start();
 
     logger = LoggingMaster.getLogger(getClass());
     logger.info ("I'm alive! {}", GitNess.gitDescription());
     Utilities.logMetadataToDataLog();
-
-    if (! DogLog.getOptions().captureNt()) {
-      Utilities.addDataLogForNT("frc3620");
-      Utilities.addDataLogForNT("SmartDashboard/frc3620");
-    }
 
     // whenever a command initializes, the function declared below will run.
     CommandScheduler.getInstance().onCommandInitialize(command ->
@@ -67,7 +62,7 @@ public class Robot extends TimedRobot {
 
     // FileSaver.add("networktables.json");
 
-    enableLiveWindowInTest(true);
+    // enableLiveWindowInTest(true);
 
     DriverStation.silenceJoystickConnectionWarning(true);
   }
@@ -88,8 +83,8 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     Runtime rt = Runtime.getRuntime();
-    SmartDashboard.putNumber("frc3620/heap/free", rt.freeMemory());
-    SmartDashboard.putNumber("frc3620/heap/total", rt.totalMemory());
+    DogLog.log("heap/free", rt.freeMemory());
+    DogLog.log("heap/total", rt.totalMemory());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -165,8 +160,8 @@ public class Robot extends TimedRobot {
     previousRobotMode = currentRobotMode;
     currentRobotMode = newMode;
 
-    SmartDashboard.putString("frc3620/mode", newMode.toString());
-    SmartDashboard.putNumber("frc3620/modeInt", newMode.ordinal());
+    DogLog.log("mode", newMode.toString());
+    DogLog.log("modeInt", newMode.ordinal());
 
     for (var listener : robotModeChangeListeners) {
       listener.processRobotModeChange(currentRobotMode, previousRobotMode);
