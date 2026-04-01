@@ -4,16 +4,15 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.LoggingMaster;
-import org.usfirst.frc3620.odo.OdoButtonId;
-import org.usfirst.frc3620.odo.OdoIdsFlySky;
-import org.usfirst.frc3620.odo.OdoIdsLogitechDualAction;
-import org.usfirst.frc3620.odo.OdoIdsXBox;
 import org.usfirst.frc3620.odo.OdoJoystick;
 import org.usfirst.frc3620.odo.OdoJoystick.JoystickType;
+
+import dev.doglog.DogLog;
+
 import org.usfirst.frc3620.CANDeviceFinder;
 import org.usfirst.frc3620.CANDeviceType;
+import org.usfirst.frc3620.FakeDS;
 import org.usfirst.frc3620.RobotMode;
 import org.usfirst.frc3620.RobotModeChangeListener;
 import org.usfirst.frc3620.RobotParametersContainer;
@@ -22,6 +21,8 @@ import org.usfirst.frc3620.Utilities;
 import org.tinylog.TaggedLogger;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -94,6 +95,7 @@ public class RobotContainer implements RobotModeChangeListener {
   }
 
   private void makeSubsystems() {
+    new SillySubsystem(); // don't need to do anything with, just need to create it!
   }
 
   /**
@@ -110,11 +112,6 @@ public class RobotContainer implements RobotModeChangeListener {
 
     driverOdoJoystick = new OdoJoystick(driverJoystick);
     Robot.addRobotModeChangeListener(this);
-
-    driverOdoJoystick.button( //
-      OdoIdsFlySky.ButtonId.SWE, OdoIdsXBox.ButtonId.LEFT_BUMPER) //
-        .onTrue(new LogCommand("Left 'bumper' hit"));
-
   }
 
   public void processRobotModeChange(RobotMode currentRobotMode, RobotMode previousRobotMode) {
@@ -124,7 +121,7 @@ public class RobotContainer implements RobotModeChangeListener {
       int n_buttons = driverJoystick.getButtonCount();
       logger.info("Drive Controller '{}', {}connected, {} axes, {} buttons", driveControllerName, 
         driverJoystick.isConnected() ? "" : "not ", n_axes, n_buttons);
-      if (driveControllerName.startsWith("Flysky")) {
+      if (driveControllerName.startsWith("Flysky")) { // TODO, copy better code from 2026 bot
         driverOdoJoystick.setJoystickType(JoystickType.A);
       } else {
         driverOdoJoystick.setJoystickType(JoystickType.B);
@@ -132,8 +129,22 @@ public class RobotContainer implements RobotModeChangeListener {
     }
   }
 
+  FakeDS fakeDS = new FakeDS();
   private void setupSmartDashboardCommands() {
-    // SmartDashboard.putData(new xxxxCommand());
+    // SmartDashboard.putData(Commands.startEnd(() -> fakeDS.start(), () -> fakeDS.stop()).withName("DS").ignoringDisable(true));
+    fakeDS.start();
+    fakeDS.setMode(RobotMode.TELEOP);
+
+    SmartDashboard.putData(Commands.runOnce(() -> fakeDS.setMode(RobotMode.AUTONOMOUS)).withName("DS Auto").ignoringDisable(true));
+    SmartDashboard.putData(Commands.runOnce(() -> fakeDS.setMode(RobotMode.TELEOP)).withName("DS Teleop").ignoringDisable(true));
+    SmartDashboard.putData(Commands.runOnce(() -> fakeDS.setMode(RobotMode.TEST)).withName("DS Test").ignoringDisable(true));
+    SmartDashboard.putData(Commands.runOnce(() -> fakeDS.setMode(RobotMode.DISABLED)).withName("DS Disabled").ignoringDisable(true));
+  }
+
+  class SillySubsystem extends SubsystemBase {
+    public void periodic() {
+      DogLog.log("DS attached", DriverStation.isDSAttached());
+    }
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();

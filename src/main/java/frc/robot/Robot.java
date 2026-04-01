@@ -67,7 +67,7 @@ public class Robot extends TimedRobot {
 
     // FileSaver.add("networktables.json");
 
-    enableLiveWindowInTest(true);
+    // enableLiveWindowInTest(true);
 
     DriverStation.silenceJoystickConnectionWarning(true);
   }
@@ -147,7 +147,7 @@ public class Robot extends TimedRobot {
     logCANBusIfNecessary();
 
     // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
+    // CommandScheduler.getInstance().cancelAll();
 
     processRobotModeChange(RobotMode.TEST);
   }
