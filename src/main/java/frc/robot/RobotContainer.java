@@ -1,8 +1,8 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.wpilib.*;
+import org.wpilib.smartdashboard.SendableChooser;
+import org.wpilib.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.LoggingMaster;
@@ -21,7 +21,7 @@ import org.usfirst.frc3620.Utilities;
 
 import org.tinylog.TaggedLogger;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import org.wpilib.command2.Command;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -73,9 +73,9 @@ public class RobotContainer implements RobotModeChangeListener {
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.REV_PH, 1, "REV PH") || iAmACompetitionRobot) {
-      pneumaticModuleType = PneumaticsModuleType.REVPH;
+      pneumaticModuleType = PneumaticsModuleType.REV_PH;
     } else if (canDeviceFinder.isDevicePresent(CANDeviceType.CTRE_PCM, 0, "CTRE PCM")) {
-      pneumaticModuleType = PneumaticsModuleType.CTREPCM;
+      pneumaticModuleType = PneumaticsModuleType.CTRE_PCM;
     }
 
     makeSubsystems();
@@ -100,9 +100,9 @@ public class RobotContainer implements RobotModeChangeListener {
    * Use this method to define your button->command mappings. Buttons can be
    * created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+   * org.wpilib.driverstation.Joystick} or {@link XboxController}), and then passing
    * it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   * org.wpilib.command2.button.JoystickButton}.
    */
   private void configureButtonBindings() {
     driverJoystick = new Joystick(0);

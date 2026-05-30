@@ -4,13 +4,13 @@
 
 package org.usfirst.frc3620;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableRegistry;
-// import edu.wpi.first.util.sendable.SendableBuilderImpl;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilderImpl;
+import org.wpilib.networktables.NetworkTable;
+import org.wpilib.networktables.NetworkTableEntry;
+import org.wpilib.networktables.NetworkTableInstance;
+import org.wpilib.util.sendable.Sendable;
+import org.wpilib.util.sendable.SendableRegistry;
+// import org.wpilib.util.sendable.SendableBuilderImpl;
+import org.wpilib.smartdashboard.SendableBuilderImpl;
 
 import java.util.HashMap;
 import java.util.Map;

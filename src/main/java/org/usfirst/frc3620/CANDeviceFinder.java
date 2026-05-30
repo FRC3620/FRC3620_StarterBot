@@ -7,7 +7,7 @@ import java.util.*;
 import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
-import edu.wpi.first.hal.can.CANJNI;
+import org.wpilib.hardware.hal.can.CANJNI;
 
 /**
  * Class to find out which goodies are on the CAN bus. The important guts of this

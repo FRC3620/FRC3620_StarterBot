@@ -1,7 +1,7 @@
 package org.usfirst.frc3620;
 
-import edu.wpi.first.wpilibj.Alert;
-import edu.wpi.first.wpilibj.Alert.AlertType;
+import org.wpilib.util.Alert;
+import org.wpilib.util.Alert.AlertType;
 
 public class CompoundAlert {
   String name;

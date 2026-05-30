@@ -2,7 +2,7 @@ package org.usfirst.frc3620.logger;
 
 import org.tinylog.TaggedLogger;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import org.wpilib.command2.InstantCommand;
 
 @SuppressWarnings("unused")
 public class LogCommand extends InstantCommand {

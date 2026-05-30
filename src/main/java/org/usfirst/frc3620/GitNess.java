@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
-import edu.wpi.first.wpilibj.Filesystem;
+import org.wpilib.system.Filesystem;
 
 public class GitNess {
   private static Properties instance;

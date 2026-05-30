@@ -6,8 +6,8 @@ import java.util.function.DoubleSupplier;
 import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import org.wpilib.driverstation.Joystick;
+import org.wpilib.command2.button.Trigger;
 
 public class OdoJoystick {
   public enum JoystickType {

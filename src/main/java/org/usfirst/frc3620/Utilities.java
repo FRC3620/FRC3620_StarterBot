@@ -4,8 +4,8 @@
 
 package org.usfirst.frc3620;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Radians;
+import static org.wpilib.units.Units.Degrees;
+import static org.wpilib.units.Units.Radians;
 
 import java.util.*;
 import java.lang.reflect.Field;
@@ -21,21 +21,21 @@ import java.util.regex.PatternSyntaxException;
 import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.units.DistanceUnit;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.RuntimeType;
+import org.wpilib.math.util.MathUtil;
+import org.wpilib.networktables.NetworkTableInstance;
+import org.wpilib.units.AngleUnit;
+import org.wpilib.units.DistanceUnit;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.Distance;
+import org.wpilib.system.DataLogManager;
+import org.wpilib.framework.RobotBase;
+import org.wpilib.system.RobotController;
+import org.wpilib.system.RuntimeType;
 
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.util.datalog.StringLogEntry;
-import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.util.sendable.SendableRegistry.CallbackData;
+import org.wpilib.util.datalog.DataLog;
+import org.wpilib.util.datalog.StringLogEntry;
+import org.wpilib.util.sendable.SendableRegistry;
+import org.wpilib.util.sendable.SendableRegistry.CallbackData;
 
 /** Add your docs here. */
 @SuppressWarnings("unused")

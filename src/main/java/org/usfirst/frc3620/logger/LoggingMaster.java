@@ -4,11 +4,11 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import edu.wpi.first.wpilibj.RobotBase;
+import org.wpilib.framework.RobotBase;
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
-import edu.wpi.first.wpilibj.RobotController;
+import org.wpilib.system.RobotController;
 
 public class LoggingMaster {
   private static Date _timestamp = null;

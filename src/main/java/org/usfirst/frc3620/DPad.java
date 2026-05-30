@@ -2,8 +2,8 @@ package org.usfirst.frc3620;
 
 import java.util.function.BooleanSupplier;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj2.command.button.*;
+import org.wpilib.driverstation.GenericHID;
+import org.wpilib.command2.button.*;
 
 @SuppressWarnings("unused")
 public class DPad {

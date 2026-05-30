@@ -3,10 +3,10 @@ package org.usfirst.frc3620;
 import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import org.wpilib.util.sendable.Sendable;
+import org.wpilib.util.sendable.SendableBuilder;
+import org.wpilib.util.sendable.SendableRegistry;
+import org.wpilib.hardware.motor.MotorController;
 
 /** Add your docs here. */
 public class FakeMotor implements Sendable, MotorController, AutoCloseable {
