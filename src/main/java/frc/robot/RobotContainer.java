@@ -132,7 +132,7 @@ public class RobotContainer implements RobotModeChangeListener {
   FakeDS fakeDS = new FakeDS();
   private void setupSmartDashboardCommands() {
     // SmartDashboard.putData(Commands.startEnd(() -> fakeDS.start(), () -> fakeDS.stop()).withName("DS").ignoringDisable(true));
-    fakeDS.start();
+    // fakeDS.start();
     fakeDS.setMode(RobotMode.TELEOP);
 
     SmartDashboard.putData(Commands.runOnce(() -> fakeDS.setMode(RobotMode.AUTONOMOUS)).withName("DS Auto").ignoringDisable(true));
