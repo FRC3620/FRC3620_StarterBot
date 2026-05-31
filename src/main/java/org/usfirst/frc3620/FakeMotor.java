@@ -19,26 +19,26 @@ public class FakeMotor implements Sendable, MotorController, AutoCloseable {
         this.deviceId = deviceId;
         speed = 0;
         inverted = false;
-        SendableRegistry.addLW(this, "FakeMotor", deviceId);
+        // SendableRegistry.addLW(this, "FakeMotor", deviceId);
     }
 
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Motor Controller");
         builder.setActuator(true);
-        builder.setSafeState(this::stopMotor);
-        builder.addDoubleProperty("Value", this::get, this::set);
+        //builder.setSafeState(this::stopMotor);
+        builder.addDoubleProperty("Value", this::getThrottle, this::setThrottle);
         builder.publishConstString("id", "FakeMotor[" + deviceId + "]");
     }
 
     @Override
-    public void set(double speed) {
+    public void setThrottle(double speed) {
         this.speed = speed;
         logger.info ("FakeMotor[{}].set({})", deviceId, speed);
     }
 
     @Override
-    public double get() {
+    public double getThrottle() {
         return speed;
     }
 
@@ -56,12 +56,6 @@ public class FakeMotor implements Sendable, MotorController, AutoCloseable {
     @Override
     public void disable() {
         logger.info ("FakeMotor[{}].disable()", deviceId);
-    }
-
-    @Override
-    public void stopMotor() {
-        logger.info ("FakeMotor[{}].stopMotor()", deviceId);
-        this.speed = 0;
     }
 
     @Override

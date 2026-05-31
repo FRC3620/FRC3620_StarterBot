@@ -32,10 +32,10 @@ import org.wpilib.framework.RobotBase;
 import org.wpilib.system.RobotController;
 import org.wpilib.system.RuntimeType;
 
-import org.wpilib.util.datalog.DataLog;
-import org.wpilib.util.datalog.StringLogEntry;
+import org.wpilib.datalog.DataLog;
+import org.wpilib.datalog.StringLogEntry;
 import org.wpilib.util.sendable.SendableRegistry;
-import org.wpilib.util.sendable.SendableRegistry.CallbackData;
+// import org.wpilib.util.sendable.SendableRegistry.CallbackData;
 
 /** Add your docs here. */
 @SuppressWarnings("unused")
@@ -54,6 +54,8 @@ public class Utilities {
     radians = MathUtil.angleModulus(radians);
     return changeValuesUnitsTo(Radians.of(radians), angle.unit());
   }
+
+  /*
 
   public static void dumpSendables(String label, String subsystemName) {
     logger.info("Dumping Sendables: {}", label);
@@ -74,6 +76,8 @@ public class Utilities {
       }
     }
   }
+
+  */
 
   public static class SlidingWindowStats {
     LinkedList<Double> values = new LinkedList<>();
@@ -170,11 +174,6 @@ public class Utilities {
     for (double v : l)
       rv += v;
     return rv;
-  }
-
-  public static void addDataLogForNT(String prefix) {
-    String s = "/" + removeLeadingAndTrailingSlashes(prefix);
-    int handle = NetworkTableInstance.getDefault().startEntryDataLog(DataLogManager.getLog(), s, s);
   }
 
   public static String removeLeadingAndTrailingSlashes(String s) {

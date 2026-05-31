@@ -13,6 +13,9 @@ import dev.doglog.DogLogOptions;
 
 import org.wpilib.system.DataLogManager;
 import org.wpilib.driverstation.DriverStation;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.driverstation.RobotState;
+import org.wpilib.driverstation.internal.DriverStationBackend;
 import org.wpilib.framework.TimedRobot;
 import org.wpilib.smartdashboard.SmartDashboard;
 import org.wpilib.command2.Command;
@@ -37,17 +40,12 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     // get data logging going
-    DogLog.setOptions(new DogLogOptions().withCaptureDs(true).withCaptureNt(false));
+    DogLog.setOptions(new DogLogOptions().withCaptureDs(true));
     DataLogManager.start();
 
     logger = LoggingMaster.getLogger(getClass());
     logger.info ("I'm alive! {}", GitNess.gitDescription());
     Utilities.logMetadataToDataLog();
-
-    if (! DogLog.getOptions().captureNt()) {
-      Utilities.addDataLogForNT("frc3620");
-      Utilities.addDataLogForNT("SmartDashboard/frc3620");
-    }
 
     // whenever a command initializes, the function declared below will run.
     CommandScheduler.getInstance().onCommandInitialize(command ->
@@ -67,9 +65,7 @@ public class Robot extends TimedRobot {
 
     // FileSaver.add("networktables.json");
 
-    enableLiveWindowInTest(true);
-
-    DriverStation.silenceJoystickConnectionWarning(true);
+    DriverStationBackend.silenceJoystickConnectionWarning(true);
   }
 
   /**
@@ -143,18 +139,18 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {}
 
   @Override
-  public void testInit() {
+  public void utilityInit() {
     logCANBusIfNecessary();
 
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
 
-    processRobotModeChange(RobotMode.TEST);
+    processRobotModeChange(RobotMode.UTILITY);
   }
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void utilityPeriodic() {}
 
   /*
   * this routine gets called whenever we change modes
@@ -165,6 +161,7 @@ public class Robot extends TimedRobot {
     previousRobotMode = currentRobotMode;
     currentRobotMode = newMode;
 
+    DogLog.log("frc3620/mode_doglogged", newMode.toString());
     SmartDashboard.putString("frc3620/mode", newMode.toString());
     SmartDashboard.putNumber("frc3620/modeInt", newMode.ordinal());
 
@@ -186,21 +183,21 @@ public class Robot extends TimedRobot {
   }
 
   void logMatchInfo() {
-    if (DriverStation.isFMSAttached()) {
+    if (RobotState.isFMSAttached()) {
       logger.info("FMS attached. Event name {}, match type {}, match number {}, replay number {}", 
-        DriverStation.getEventName(),
-        DriverStation.getMatchType(),
-        DriverStation.getMatchNumber(),
-        DriverStation.getReplayNumber());
+        MatchState.getEventName(),
+        MatchState.getMatchType(),
+        MatchState.getMatchNumber(),
+        MatchState.getReplayNumber());
     }
-    logger.info("Alliance {}, position {}", DriverStation.getAlliance(), DriverStation.getLocation());
+    logger.info("Alliance {}, position {}", MatchState.getAlliance(), MatchState.getLocation());
   }
 
   private boolean hasCANBusBeenLogged;
   
   void logCANBusIfNecessary() {
     if (!hasCANBusBeenLogged) {
-      if (DriverStation.isDSAttached()) {
+      if (RobotState.isDSAttached()) {
         logger.info("CAN bus: {}", RobotContainer.canDeviceFinder.getDeviceSet());
         var missingDevices = RobotContainer.canDeviceFinder.getMissingDeviceSet();
         if (!missingDevices.isEmpty()) {

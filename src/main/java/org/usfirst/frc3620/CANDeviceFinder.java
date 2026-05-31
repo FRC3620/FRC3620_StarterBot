@@ -260,8 +260,8 @@ public class CANDeviceFinder {
             timeStamp.order(ByteOrder.LITTLE_ENDIAN);
             timeStamp.asIntBuffer().put(0, 0x00000000);
 
-            CANJNI.FRCNetCommCANSessionMuxReceiveMessage(
-                    targetID.asIntBuffer(), 0x1fffffff, timeStamp);
+            // TODO
+            // CANJNI.FRCNetCommCANSessionMuxReceiveMessage(targetID.asIntBuffer(), 0x1fffffff, timeStamp);
 
             long rv = timeStamp.getInt();
             rv &= 0xFFFFFFFFL; /* undo sign-extension */

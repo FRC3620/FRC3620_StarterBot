@@ -2,12 +2,27 @@ plugins {
     id "java"
     id "org.wpilib.GradleRIO" version "2027.0.0-alpha-6"
     id "com.gradleup.shadow" version "9.3.0"
+    // FRC3620 ****************************************************************
+    id "com.gorylenko.gradle-git-properties" version "4.0.0"
+    id "name.remal.merge-resources" version "5.0.1"  // see note on tinylog
+    // later:
+    // id 'com.diffplug.spotless' version '6.12.0'
+    // ************************************************************************
 }
+var do_spotless = false
+var useG1GC = false
+String jmxHost = null // "172.22.11.2"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_25
     targetCompatibility = JavaVersion.VERSION_25
 }
+
+// FRC3620 ********************************************************************
+compileJava.options.encoding = 'UTF-8' 
+compileTestJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
+// ****************************************************************************
 
 def ROBOT_MAIN_CLASS = "first.Main"
 
@@ -31,6 +46,19 @@ deploy {
                 // getTargetTypeClass is a shortcut to get the class type using a string
 
                 wpilibJava(getArtifactTypeClass('WPILibJavaArtifact')) {
+                    if (useG1GC) {
+                        gcType = 'Other'
+                        jvmArgs.add("-XX:+UseG1GC")
+                        jvmArgs.add("-XX:MaxGCPauseMillis=1")
+                        jvmArgs.add("-XX:GCTimeRatio=1")
+                    }
+                    if (jmxHost != null) {
+                        jvmArgs.add("-Dcom.sun.management.jmxremote=true")
+                        jvmArgs.add("-Dcom.sun.management.jmxremote.port=1198")
+                        jvmArgs.add("-Dcom.sun.management.jmxremote.authenticate=false")
+                        jvmArgs.add("-Dcom.sun.management.jmxremote.ssl=false")
+                        jvmArgs.add("-Djava.rmi.server.hostname=" + jmxHost)
+                    }
                 }
 
                 // Static files artifact
@@ -61,6 +89,15 @@ dependencies {
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
 
+    // if using tinylog, you need to either set the duplicatesStrategy to false, or
+    // use a plugin to consolidate the META-INF/services files. otherwise it's a crap 
+    // shoot if tinylog will pick up the embedded service files or the ones in
+    // our source tree
+    implementation 'org.tinylog:tinylog-api:2.7.0' // Replace with the latest version
+    implementation 'org.tinylog:tinylog-impl:2.7.0' // Replace with the latest version
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
+
     systemcoreDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.systemcore)
     systemcoreDebug wpi.java.vendor.jniDebug(wpi.platforms.systemcore)
 
@@ -77,11 +114,31 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'junit:junit:4.13.1'
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.10.1") {
+        because 'allows JUnit 3 and JUnit 4 tests to run'
+    }
 }
 
 test {
     useJUnitPlatform()
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+
+    // FRC3620 ********************************************************************
+    if (useG1GC) {
+        jvmArgs "-XX:+UseG1GC"
+        jvmArgs "-XX:MaxGCPauseMillis=1"
+        jvmArgs "-XX:GCTimeRatio=1"
+    } else {
+        jvmArgs '-XX:+UseSerialGC'
+    }
+
+    // test wonderfulness
+    filter {
+        // https://stackoverflow.com/a/52879530/17887564
+        setFailOnNoMatchingTests(false)
+    }
+    // ****************************************************************************
 }
 
 // Simulation configuration (e.g. environment variables).
@@ -109,3 +166,131 @@ wpi.java.configureTestTasks(test)
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
+
+// FRC3620 ********************************************************************
+// git wonderfulness
+task printGitProperties {
+    dependsOn generateGitProperties
+    def ext = project.ext // accessing 'project' inside 'doLast' would make it incompatible with Gradle configuration cache
+    doLast {
+        println "=== Project Extra Properties ==="
+        println "Properties:  ${-> ext.getProperties()}"
+        ext.properties.each { key, value ->
+            println "${key} = ${value}"
+        }
+        // println "Branch:     ${-> ext.gitProps["git.branch"]}"
+    }
+}
+
+def getBuildTime(df) {
+    def sdf = new java.text.SimpleDateFormat(df)
+    return sdf.format(new Date())
+}
+
+gitProperties {
+    dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ (EEE)"
+    // Customize directory using gitPropertiesResourceDir config
+    // The directory in this config key is also added as a classpath entry
+    // (so the git.properties file will be included in the final JAR file)
+    customProperty "build.time", { getBuildTime(dateFormat) }
+    customProperty "project.dir", { project.projectDir.getName() }
+    customProperty 'git.commit.id.describe', { it.describe(tags: true, always: true) }
+    gitPropertiesResourceDir = file("${project.rootDir}/src/main/deploy")
+    extProperty = 'gitProps'
+    println '== set gitprops =='
+}
+// following line blows up with 2.5.4
+generateGitProperties.finalizedBy printGitProperties // make sure we do things in the correct order
+generateGitProperties.outputs.upToDateWhen { false } // make sure the generateGitProperties task always executes (even when git.properties is not changed)
+
+tasks.processResources.dependsOn generateGitProperties // make sure we do things in the correct order
+// https://stackoverflow.com/a/70648216/17887564
+tasks.processResources.outputs.upToDateWhen { false }  // make sure the processResources task always runs
+
+// ****************************************************************************
+
+// FRC3620 ********************************************************************
+
+// this helps junit test results show up in output
+// look at https://stackoverflow.com/a/36130467/17887564 for some more suggestions
+tasks.withType(Test) {
+    testLogging {
+        exceptionFormat "full"
+        // events "passed", "failed" // , "started", "skipped"
+        showStandardStreams true
+        showExceptions true
+    }
+}
+
+tasks.test {
+    // only run tests if explicitly specified
+    // https://discuss.gradle.org/t/dont-run-tests-unless-test-task-specified-on-command-line/33700/4 
+    // run tests with .\gradlew test --tests <test-names>
+    enabled = gradle.startParameter.taskNames.contains("test")
+}
+
+// spotless!
+if (do_spotless) {
+    spotless {
+        java {
+            target fileTree('.') {
+                include '**/*.java'
+                exclude '**/build/**', '**/build-*/**'
+            }
+            toggleOffOn()
+            googleJavaFormat()
+            removeUnusedImports()
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+        groovyGradle {
+            target fileTree('.') {
+                include '**/*.gradle'
+                exclude '**/build/**', '**/build-*/**'
+            }
+            greclipse()
+            indentWithSpaces(4)
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+        format 'xml', {
+            target fileTree('.') {
+                include '**/*.xml'
+                exclude '**/build/**', '**/build-*/**'
+            }
+            eclipseWtp('xml')
+            trimTrailingWhitespace()
+            indentWithSpaces(2)
+            endWithNewline()
+        }
+        format 'misc', {
+            target fileTree('.') {
+                include '**/*.md', '**/.gitignore'
+                exclude '**/build/**', '**/build-*/**'
+            }
+            trimTrailingWhitespace()
+            indentWithSpaces(2)
+            endWithNewline()
+        }
+    }
+}
+
+if (false) {
+    gradle.taskGraph.whenReady {taskGraph ->
+        println "Tasks"
+        taskGraph.getAllTasks().eachWithIndex{ task, n ->
+            println "${n + 1} $task"
+            task.dependsOn.eachWithIndex{ depObj, m ->
+                println "  ${ m + 1 } $depObj"
+            }
+        }
+    } 
+}
+
+// keep name.remal.merge-resources happy
+mergeResources {
+    moduleInfo {
+        enabled = false
+    }
+}
+// ****************************************************************************

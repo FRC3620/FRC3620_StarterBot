@@ -60,7 +60,7 @@ public final class FrcFileWriter extends AbstractFormatPatternWriter {
   public FrcFileWriter(final Map<String, String> properties) throws IOException {
     super(properties);
 
-    double fpga = Timer.getFPGATimestamp();
+    double fpga = Timer.getMonotonicTimestamp();
     Instant nowInstant = Instant.now();
     double instant = nowInstant.getEpochSecond() + (nowInstant.getNano() / 1.E9);
 

@@ -1,14 +1,11 @@
 package frc.robot;
 
-import org.wpilib.*;
 import org.wpilib.smartdashboard.SendableChooser;
 import org.wpilib.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.LoggingMaster;
-import org.usfirst.frc3620.odo.OdoButtonId;
 import org.usfirst.frc3620.odo.OdoIdsFlySky;
-import org.usfirst.frc3620.odo.OdoIdsLogitechDualAction;
 import org.usfirst.frc3620.odo.OdoIdsXBox;
 import org.usfirst.frc3620.odo.OdoJoystick;
 import org.usfirst.frc3620.odo.OdoJoystick.JoystickType;
@@ -22,6 +19,12 @@ import org.usfirst.frc3620.Utilities;
 import org.tinylog.TaggedLogger;
 
 import org.wpilib.command2.Command;
+import org.wpilib.driverstation.Alert;
+import org.wpilib.driverstation.DriverStation;
+import org.wpilib.driverstation.Joystick;
+import org.wpilib.driverstation.RobotState;
+import org.wpilib.hardware.discrete.DigitalInput;
+import org.wpilib.hardware.pneumatic.PneumaticsModuleType;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -39,7 +42,7 @@ public class RobotContainer implements RobotModeChangeListener {
   public static CANDeviceFinder canDeviceFinder;
   public static RobotParameters robotParameters;
 
-  Alert missingDevicesAlert = new Alert("Diagnostics", "", Alert.AlertType.kWarning);
+  Alert missingDevicesAlert = new Alert("Diagnostics", "", Alert.Level.MEDIUM);
 
   // hardware here...
   private static DigitalInput practiceBotJumper;
@@ -120,8 +123,8 @@ public class RobotContainer implements RobotModeChangeListener {
   public void processRobotModeChange(RobotMode currentRobotMode, RobotMode previousRobotMode) {
     if (currentRobotMode == RobotMode.TELEOP) {
       String driveControllerName = driverJoystick.getName();
-      int n_axes = driverJoystick.getAxisCount();
-      int n_buttons = driverJoystick.getButtonCount();
+      int n_axes = driverJoystick.getAxesMaximumIndex();
+      int n_buttons = driverJoystick.getButtonsMaximumIndex();
       logger.info("Drive Controller '{}', {}connected, {} axes, {} buttons", driveControllerName, 
         driverJoystick.isConnected() ? "" : "not ", n_axes, n_buttons);
       if (driveControllerName.startsWith("Flysky")) {
@@ -174,7 +177,7 @@ public class RobotContainer implements RobotModeChangeListener {
    */
   @SuppressWarnings({ "unused", "RedundantIfStatement", "PointlessBooleanExpression" })
   public static boolean amIACompBot() {
-    if (DriverStation.isFMSAttached()) {
+    if (RobotState.isFMSAttached()) {
       return true;
     }
 
@@ -210,7 +213,7 @@ public class RobotContainer implements RobotModeChangeListener {
    */
   @SuppressWarnings({ "unused", "RedundantIfStatement" })
   public static boolean shouldMakeAllCANDevices() {
-    if (DriverStation.isFMSAttached()) {
+    if (RobotState.isFMSAttached()) {
       return true;
     }
 

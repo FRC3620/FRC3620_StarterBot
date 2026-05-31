@@ -1,7 +1,7 @@
 package org.usfirst.frc3620;
 
-import org.wpilib.util.Alert;
-import org.wpilib.util.Alert.AlertType;
+import org.wpilib.driverstation.Alert;
+import org.wpilib.driverstation.Alert.Level;
 
 public class CompoundAlert {
   String name;
@@ -19,9 +19,9 @@ public class CompoundAlert {
   public CompoundAlert(String groupname, String name) {
     this.name = name;
 
-    infoAlert = new Alert(groupname, "", AlertType.kInfo);
-    warningAlert = new Alert(groupname, "", AlertType.kWarning);
-    errorAlert = new Alert(groupname, "", AlertType.kError);
+    infoAlert = new Alert(groupname, "", Level.LOW);
+    warningAlert = new Alert(groupname, "", Level.MEDIUM);
+    errorAlert = new Alert(groupname, "", Level.HIGH);
 
     reset();
   }

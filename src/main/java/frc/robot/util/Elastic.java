@@ -17,11 +17,11 @@ public final class Elastic {
   private static final StringTopic notificationTopic =
       NetworkTableInstance.getDefault().getStringTopic("/Elastic/RobotNotifications");
   private static final StringPublisher notificationPublisher =
-      notificationTopic.publish(PubSubOption.sendAll(true), PubSubOption.keepDuplicates(true));
+      notificationTopic.publish(PubSubOption.SEND_ALL, PubSubOption.KEEP_DUPLICATES);
   private static final StringTopic selectedTabTopic =
       NetworkTableInstance.getDefault().getStringTopic("/Elastic/SelectedTab");
   private static final StringPublisher selectedTabPublisher =
-      selectedTabTopic.publish(PubSubOption.keepDuplicates(true));
+      selectedTabTopic.publish(PubSubOption.KEEP_DUPLICATES);
   private static final ObjectMapper objectMapper = new ObjectMapper();
 
   /**
