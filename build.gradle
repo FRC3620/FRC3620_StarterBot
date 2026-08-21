@@ -96,6 +96,10 @@ dependencies {
     implementation 'org.tinylog:tinylog-api:2.7.0' // Replace with the latest version
     implementation 'org.tinylog:tinylog-impl:2.7.0' // Replace with the latest version
 
+    implementation 'io.avaje:avaje-jsonb:3.11'
+    annotationProcessor 'io.avaje:avaje-jsonb-generator:3.11'
+    implementation 'io.avaje:avaje-jsonb-generator:3.11'
+
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
 
     systemcoreDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.systemcore)
